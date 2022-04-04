@@ -25,64 +25,42 @@
 		</div>
 		<v-container class="mt-n16">
             <v-row>
-                <v-col md="3">
+                <v-col md="8">
                     <v-card outlined>
-                        <v-card-title>Nomor Soal</v-card-title>
-                        <v-divider/>
                         <v-card-text>
-                            <v-btn rounded small class="mb-1 primary">1</v-btn>
-                            <v-btn rounded small class="mb-1">2</v-btn>
-                            <v-btn rounded small class="mb-1">3</v-btn>
-                            <v-btn rounded small class="mb-1">4</v-btn>
-                            <v-btn rounded small class="mb-1">5</v-btn>
+                            <p>
+                                Perkembangan kemampuan siswa untuk menyelesaikan soal secara tak langsung berjalan seiring dengan kemampuan mereka dalam memahami persoalan informatika. Siswa harus dapat memahami informasi yang diberikan, mengidentifikasi karakteristik penting dan hubungannya, membangun representasi yang sesuai untuk solusi, dan akhirnya, mengambil keputusan yang tepat untuk memecahkan soal.
+                            </p>
+                            <v-text-field
+                                label="nilai V1"
+                                persistent-placeholder/>
+                            <v-text-field
+                                label="nilai V2"
+                                persistent-placeholder/>
                         </v-card-text>
+                        <v-card-actions>
+                            <v-spacer/>
+                            <v-btn class="primary">Check Jawaban</v-btn>
+                        </v-card-actions>
                     </v-card>
                 </v-col>
-                <v-col md="9">
+                <v-col md="4">
                     <v-card outlined>
+                        <v-card-subtitle>Feedback</v-card-subtitle>
+                        <v-divider/>
+                        <v-card-text>
+                            <p>Ini feedback</p>
+                        </v-card-text>
+                        <v-divider/>
                         <v-tabs
                             v-model="tab">
-                            <v-tab>Soal</v-tab>
-                            <v-tab>Hint</v-tab>
-                            <v-tab>Feedback</v-tab>
+                            <v-tab>Hints</v-tab>
                             <v-tab>Chat Bot</v-tab>
                         </v-tabs>
-                        <v-divider/>
                         <v-card-text>
                             <v-tabs-items v-model="tab">
                                 <v-tab-item>
-                                    <v-text-field
-                                        persistent-placeholder
-                                        type="number"
-                                        label="Maksimal Percobaan Menjawab"/>
-                                    <v-textarea
-                                        persistent-placeholder
-                                        label="Soal"/>
-                                    <p class="mb-0">Opsi Jawaban</p>
-                                    <v-row>
-                                        <v-col>
-                                            <v-text-field 
-                                                label="Opsi 1"
-                                                persistent-placeholder
-                                                hide-details=""/>
-                                        </v-col>
-                                        <v-col>
-                                            <v-text-field 
-                                                label="Jawaban 1"
-                                                persistent-placeholder
-                                                hide-details=""/>
-                                        </v-col>
-                                    </v-row>
-                                    <div class="text-right mt-4">
-                                        <v-btn small class="primary">
-                                            Check Jawaban
-                                        </v-btn>
-                                    </div>
-                                </v-tab-item>
-                                <v-tab-item>
-                                    <v-textarea
-                                        placeholder="Tulis disini ..."
-                                        persistent-placeholder/>
+                                    <v-btn block>Lihat Hints</v-btn>
                                 </v-tab-item>
                                 <v-tab-item>
                                     <v-textarea
