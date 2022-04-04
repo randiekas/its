@@ -3,17 +3,9 @@
 		<div class="primary pb-16">
 			<v-container>
 				<Head
-					title="Detail"
-					subtitle="Latihan 1 fisika">
+					title="Buat"
+					subtitle="Buat Latihan Soal Berbasis ITS">
                     <div>
-                        <v-btn 
-                            small 
-                            class="white">
-                            <v-icon left>
-                                mdi-share-variant
-                            </v-icon>
-                            Bagikan Link
-                        </v-btn>
                         <v-btn
                             exact
                             small
@@ -34,6 +26,15 @@
 		<v-container class="mt-n16">
             <v-row>
                 <v-col md="3">
+                    <v-card>
+                        <v-card-text 
+                            class="mb-3">
+                            <v-text-field
+                                label="Nama Latihan"
+                                hide-details=""
+                                persistent-placeholder/>
+                        </v-card-text>
+                    </v-card>
                     <v-card outlined>
                         <v-card-title>Nomor Soal</v-card-title>
                         <v-divider/>

@@ -3,13 +3,13 @@
 		<div class="primary pb-16">
 			<v-container>
 				<Head
-					title="Latihan"
+					title="Latihan Path"
 					subtitle="Kelola data latihan berbasis ITS">
                     <v-btn
                         exact
                         small
                         class="white"
-                        to="/apps/latihan/create">
+                        to="/apps/latihan-path/create">
                         <v-icon left>
                             mdi-account-plus
                         </v-icon>
@@ -89,12 +89,12 @@
                     </template>
                     <template v-slot:[`item.aksi`]="{ item }">
                         <v-btn 
-                            :to="`/apps/latihan/${item.id}/kelola`"
+                            :to="`/apps/latihan-path/${item.id}/kelola`"
                             x-small>
                             Kelola
                         </v-btn>
                         <v-btn 
-                            :to="`/apps/latihan/${item.id}/peserta`"
+                            :to="`/apps/latihan-path/${item.id}/peserta`"
                             x-small>
                             Peserta
                         </v-btn>
@@ -136,7 +136,7 @@ export default {
                         value: 'no',
                     },
                     { text: 'Nama', value: 'nama' },
-                    { text: 'Jumlah Soal', value: 'jumlah_soal' },
+                    { text: 'Jumlah Latihan', value: 'jumlah_soal' },
                     { text: 'Jumlah Peserta', value: 'jumlah_peserta' },
                     { text: 'Created', value: 'created_at' },
                     { text: 'Updated', value: 'updated_at' },
@@ -201,7 +201,7 @@ export default {
             this.isFetching     = false
         },
         handelClickDetail: function( item ){
-            this.$router.push(`/apps/latihan/${item.id}`);
+            this.$router.push(`/apps/latihan-path/${item.id}`);
         },
 
     }

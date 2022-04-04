@@ -4,7 +4,7 @@
 		<v-container>
 			<Head
 				title="ITS"
-				subtitle="Latihan Soal Berbasis Intellegence Tutoring System"
+				subtitle="Intellegence Tutoring System"
 				color="white--text">
 				<v-btn 
 					small 
@@ -16,63 +16,55 @@
 					Keluar Aplikasi
 				</v-btn>
 			</Head>
-			<v-card class="mb-8">
-				<v-card-text>
-					<v-row>
-						<v-text-field
-							class="mt-0"
-							hide-details=""
-							solo
-							persistent-placeholder
-							placeholder="Kode ITS"
-							dense/>
-						<v-btn class="primary">
-							Gabung
-						</v-btn>
-					</v-row>
-				</v-card-text>
-			</v-card>
-			<p class="white--text text-overline d-flex">
-				ITS yang kamu ikuti
-				<v-spacer/>
-				<v-btn text small class="white--text" to="/apps/its">
-					Lihat Semua
-				</v-btn>
-			</p>
 			<v-row v-if="isFetching" class="mb-8">
-				<v-col md="3">
-					<v-card
-						hover
-						to="/apps/its/1">
-						<v-card-title>ITS Fisika</v-card-title>
-						<v-card-subtitle>20 Peserta</v-card-subtitle>
-						<v-card-subtitle>3 Latihan Soal</v-card-subtitle>
+				<v-col sm="12" md="3" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
 					</v-card>
 				</v-col>
-				<v-col md="3">
-					<v-card
-						hover
-						to="/apps/its/1">
-						<v-card-title>ITS Fisika</v-card-title>
-						<v-card-subtitle>20 Peserta</v-card-subtitle>
-						<v-card-subtitle>3 Latihan Soal</v-card-subtitle>
+				<v-col sm="12" md="3" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
 					</v-card>
 				</v-col>
-				<v-col md="3">
-					<v-card
-						hover
-						to="/apps/its/1">
-						<v-card-title>ITS Fisika</v-card-title>
-						<v-card-subtitle>20 Peserta</v-card-subtitle>
-						<v-card-subtitle>3 Latihan Soal</v-card-subtitle>
+				<v-col sm="12" md="3" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
+				<v-col sm="12" md="3" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
 					</v-card>
 				</v-col>
 			</v-row>
-			<p class="white--text text-overline">Buat Latihan Soal Berbasis ITS mu sendiri</p>
+			
 		</v-container>
 		</div>
 		<v-container class="mt-n16">
 			<v-row class="mt-2 mt-n8">
+				<v-col v-if="isFetching" sm="12" md="6" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
+				<v-col v-if="isFetching" sm="12" md="6" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
 				<v-col cols="12" md="12">
 					<v-row>
 						<v-col v-for="(item, index) in apps" :key="index" sm="12" md="12" cols="12">

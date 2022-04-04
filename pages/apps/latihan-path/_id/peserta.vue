@@ -3,18 +3,28 @@
 		<div class="primary pb-16">
 			<v-container>
 				<Head
-					title="Latihan"
+					title="Peserta"
 					subtitle="Kelola data latihan berbasis ITS">
-                    <v-btn
-                        exact
-                        small
-                        class="white"
-                        to="/apps/latihan/create">
-                        <v-icon left>
-                            mdi-account-plus
-                        </v-icon>
-                        Create
-                    </v-btn>
+                    <div>
+                        <v-btn 
+                            small 
+                            class="white">
+                            <v-icon left>
+                                mdi-share-variant
+                            </v-icon>
+                            Bagikan Link
+                        </v-btn>
+                        <v-btn
+                            exact
+                            small
+                            class="white"
+                            to="/apps/latihan">
+                            <v-icon left>
+                                mdi-chevron-left
+                            </v-icon>
+                            Kembali
+                        </v-btn>
+                    </div>
 				</Head>
 				<v-row class="mt-2">
 
@@ -27,7 +37,16 @@
                     <v-row dense>
                         <v-col>
                             <v-text-field
-                                label="Nama Latihan"
+                                label="Nama Peserta"
+                                v-model="filterName"
+                                v-on:keyup.enter="handelLoadData"
+                                placeholder="Tulis disini ..."
+                                persistent-placeholder
+                                hide-details=""/>
+                        </v-col>
+                        <v-col>
+                            <v-text-field
+                                label="ID Peserta"
                                 v-model="filterName"
                                 v-on:keyup.enter="handelLoadData"
                                 placeholder="Tulis disini ..."
@@ -39,17 +58,8 @@
                                 type="date"
                                 v-model="filterCreatedAt"
                                 v-on:keyup.enter="handelLoadData"
-                                label="Dibuat pada"
+                                label="Mengikuti Pada"
                                 value="06 Sep 2020"
-                                hide-details=""/>
-                        </v-col>
-                        <v-col>
-                            <v-select
-                                :items="[{value:0, label: 'Inactive'}, {value:1, label: 'Active'}]"
-                                item-value='value'
-                                item-text='label'
-                                v-model="filterStatus"
-                                label="Status"
                                 hide-details=""/>
                         </v-col>
                         <v-col md="1">
@@ -135,13 +145,11 @@ export default {
                         sortable: false,
                         value: 'no',
                     },
+                    { text: 'ID Peserta', value: 'id' },
                     { text: 'Nama', value: 'nama' },
-                    { text: 'Jumlah Soal', value: 'jumlah_soal' },
-                    { text: 'Jumlah Peserta', value: 'jumlah_peserta' },
-                    { text: 'Created', value: 'created_at' },
-                    { text: 'Updated', value: 'updated_at' },
-                    { text: 'Status', value: 'status' },
-                    { text: '', value: 'aksi' },
+                    { text: 'Terselesaikan', value: 'selesai' },
+                    { text: 'Mengikuti Pada', value: 'created_at' },
+                    // { text: '', value: 'aksi' },
                 ],
                 data:[]
             },
@@ -168,7 +176,7 @@ export default {
             if(this.filterStatus.toString()){
                 query.push(`status:${this.filterStatus}`)
             }
-            if(query.length>0){
+            if(query.length>0){s
                 query           = `&query=${query.join(',')}`
             }
             // const data          = (await this.$api.$get(`admin/foundation/role?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
@@ -176,19 +184,17 @@ export default {
             const data          = { 
                 content:[
                     {
-                        id: 1,
-                        nama: 'Latihan Fisika 1',
-                        jumlah_soal: 20,
-                        jumlah_peserta:30,
+                        id: 1202144193,
+                        nama: 'Randi Eka Setiawan',
+                        selesai: "3/3",
                         status: 1,
                         dibuat: '2022-03-26 08:56:13',
                         diubah: '2022-03-26 08:56:13',
                     },
                     {
-                        id: 2,
-                        nama: 'Latihan Fisika 2',
-                        jumlah_soal: 20,
-                        jumlah_peserta:30,
+                        id: 1202144193,
+                        nama: 'Christopher David',
+                        selesai: "2/3",
                         status: 0,
                         dibuat: '2022-03-26 08:56:13',
                         diubah: '2022-03-26 08:56:13',

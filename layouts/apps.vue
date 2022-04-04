@@ -90,6 +90,12 @@ export default {
 						"deskripsi":"Kelola Data Latihan",
 						"link":"/apps/latihan"
 					},
+					{
+						"ikon": "mdi-timeline-check-outline",
+						"nama":"Latihan Path",
+						"deskripsi":"Kelola latihan path, agar setiap urutan latihan bisa disesuaikan dengan nilai",
+						"link":"/apps/latihan-path"
+					},
 					// {
 					// 	"ikon": "mdi-map-marker-radius-outline",
 					// 	"nama":"Kecamatan",
