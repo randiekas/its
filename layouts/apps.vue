@@ -83,7 +83,7 @@ export default {
 			user,
 			tipe,
 			apps:{
-				'guru': [
+				'umum': [
 					{
 						"ikon": "mdi-pencil-box-multiple-outline",
 						"nama":"Latihan",

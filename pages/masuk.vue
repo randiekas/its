@@ -23,26 +23,23 @@ export default {
 		const token 		= `Bearer ${urlParams.get('access_token')}`
 		const tipe			= $auth.$storage.getUniversal("loginType")
 		
-		$auth.$storage.setUniversal("_token.google", token)
-		setTimeout(()=>{
-			window.location.href='/apps/beranda'
-		}, 2000)
-		// await $axios.$post(`v1/akun/masukGoogle`,{
-		// 	token:token,
-		// 	tipe:tipe,
-		// 	device:2,
-		// 	token_device:'',
-		// }).then((resp)=>{
-		// 	if(resp.status){	
-		// 		$auth.$storage.setUniversal("authToken", resp.data)
-		// 		$auth.$storage.setUniversal("_token.google", token)
-		// 		window.location.href='/apps/beranda'
-		// 	}else{
-		// 		if(confirm(resp.message)){
-		// 			window.location.href='/'
-		// 		}
-		// 	}
-		// })
+		
+		await $axios.$post(`/akun/masuk`,{
+			token:token,
+			tipe:tipe,
+			device:2,
+			token_device:'',
+		}).then((resp)=>{
+			if(resp.status){	
+				$auth.$storage.setUniversal("authToken", resp.data.token)
+				$auth.$storage.setUniversal("_token.google", token)
+				window.location.href='/apps/beranda'
+			}else{
+				if(confirm(resp.message)){
+					window.location.href='/'
+				}
+			}
+		})
 		return {
 			info
 		}

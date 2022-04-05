@@ -49,8 +49,8 @@ export default {
 			this.$router.push(`/apps/beranda`) 
 		}
 		return {
-			role: ['guru', 'siswa', 'admin'],
-			roleDipilih: 'guru',
+			role: ['umum', 'guru', 'siswa', 'admin'],
+			roleDipilih: 'umum',
 		}
 	},
 	methods:{

@@ -3,14 +3,14 @@
 		<div class="primary pb-16">
 			<v-container>
 				<Head
-					title="ITS Fisika 1"
-					subtitle="4 Latihan Soal">
+					:title="detail.path.nama"
+					:subtitle="`${detail.jumlah_latihan} Latihan`">
                     <div>
                         <v-btn
                             exact
                             small
                             class="white"
-                            to="/apps/latihan">
+                            to="/apps/beranda">
                             <v-icon left>
                                 mdi-chevron-left
                             </v-icon>
@@ -24,46 +24,60 @@
 			</v-container>
 		</div>
 		<v-container class="mt-n16">
-            <v-card 
-                hover
-                to="/apps/its/1/detail"
-                outlined class="mb-3">
-                <v-card-title>
-                    Latihan Soal 1
-                    <v-spacer/>
-                    <v-btn text>
-                        Minimum Nilai: 80
-                    </v-btn>
-                    <v-btn text>
-                        Soal: 40
-                    </v-btn>
-                    <v-btn text icon large>
-                        <v-icon color="green">
-                            mdi-check-decagram
-                        </v-icon>
-                    </v-btn>
-                </v-card-title>
-            </v-card>
-            <v-card 
-                hover
-                to="/apps/its/1/mulai"
-                outlined class="mb-3">
-                <v-card-title>
-                    Latihan Soal 2
-                    <v-spacer/>
-                    <v-btn text>
-                        Minimum Nilai: 80
-                    </v-btn>
-                    <v-btn text>
-                        Soal: 40
-                    </v-btn>
-                    <v-btn text icon large>
-                        <v-icon color="green">
-                            mdi-check-decagram
-                        </v-icon>
-                    </v-btn>
-                </v-card-title>
-            </v-card>
+            <v-row v-if="isFetching" class="mb-8">
+				<v-col sm="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
+				<v-col sm="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
+                <v-col sm="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
+			</v-row>
+            <template
+                v-if="detail.id">
+                <v-card 
+                    v-for="(item, index) in detail.path.latihan"
+                    :key="index"
+                    hover
+                    to="/apps/its/1/detail"
+                    outlined class="mb-3">
+                    <v-card-title>
+                        {{ item.nama }}
+                        <v-spacer/>
+                        <v-btn text>
+                            Minimum benar: {{ item.minimun_benar }}
+                        </v-btn>
+                        <v-btn text>
+                            Soal: {{ item.jumlah_soal }}
+                        </v-btn>
+                        <v-btn text icon large>
+                            <v-icon 
+                                v-if="index==0"
+                                color="green">
+                                mdi-check-decagram
+                            </v-icon>
+                            <v-icon 
+                                v-else> 
+                                mdi-lock
+                            </v-icon>
+                        </v-btn>
+                    </v-card-title>
+                </v-card>
+            </template>
 		</v-container>
 	</div>
 </template>
@@ -71,9 +85,16 @@
 export default {
     layout:'apps',
 	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access' ],
+    asyncData: async function({ route }){
+
+        return {
+            id: route.params.id
+        }
+    },
     data: function(){
         return {
-            tab: 0,
+            isFetching:true,
+			detail: { path:{nama: '-', jumlah_latihan: '-'}, }
         }
     },
     mounted: function(){
@@ -81,12 +102,10 @@ export default {
     },
     methods: {
         handelLoadData: async function(){
-
+            this.isFetching	= true
+			this.detail	    = (await this.$api.$get(`/path/saya/${this.id}`)).data
+			this.isFetching	= false
         },
-        handelClickDetail: function( item ){
-            
-        },
-
     }
 }
 </script>

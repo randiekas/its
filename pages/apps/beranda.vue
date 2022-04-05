@@ -35,36 +35,51 @@
 			<p class="white--text text-overline d-flex">
 				ITS yang kamu ikuti
 				<v-spacer/>
-				<v-btn text small class="white--text" to="/apps/its">
+				<v-btn text small class="white--text">
 					Lihat Semua
 				</v-btn>
 			</p>
 			<v-row v-if="isFetching" class="mb-8">
-				<v-col md="3">
-					<v-card
-						hover
-						to="/apps/its/1">
-						<v-card-title>ITS Fisika</v-card-title>
-						<v-card-subtitle>20 Peserta</v-card-subtitle>
-						<v-card-subtitle>3 Latihan Soal</v-card-subtitle>
+				<v-col sm="12" md="3" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
 					</v-card>
 				</v-col>
-				<v-col md="3">
-					<v-card
-						hover
-						to="/apps/its/1">
-						<v-card-title>ITS Fisika</v-card-title>
-						<v-card-subtitle>20 Peserta</v-card-subtitle>
-						<v-card-subtitle>3 Latihan Soal</v-card-subtitle>
+				<v-col sm="12" md="3" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
 					</v-card>
 				</v-col>
-				<v-col md="3">
+				<v-col sm="12" md="3" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
+				<v-col sm="12" md="3" cols="12">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
+			</v-row>
+			<v-row v-else class="mb-8">
+				<v-col 
+					v-for="(item, index) in data"
+					:key="index"
+					md="3">
 					<v-card
 						hover
-						to="/apps/its/1">
-						<v-card-title>ITS Fisika</v-card-title>
-						<v-card-subtitle>20 Peserta</v-card-subtitle>
-						<v-card-subtitle>3 Latihan Soal</v-card-subtitle>
+						:to="`/apps/its/${item.id}`">
+						<v-card-title>{{ item.path.nama }}</v-card-title>
+						<v-card-subtitle>{{ item.path.jumlah_peserta}} Peserta</v-card-subtitle>
+						<v-card-subtitle>{{ item.path.jumlah_latihan}} Latihan Soal</v-card-subtitle>
 					</v-card>
 				</v-col>
 			</v-row>
@@ -103,77 +118,21 @@
 export default {
 	layout:'apps',
 	props: ['apps', 'tipe', 'handelKeluar'],
-	async asyncData({ }) {
+	data: function(){
 		return {
 			isFetching:true,
+			data: []
 		}
 	},
-	data: () => ({
-		
-    }),
 	mounted: function(){
-		if(this.tipe==='desa'){
-			this.handleUpdateDataDesa()
-		}else if(this.tipe==='kecamatan'){
-			this.handleUpdateDataKecamatan()
-		}
-		
+		this.handelLoadData()
 	},
 	methods:{
-		handleUpdateDataDesa: async function(){
+		handelLoadData: async function(){
 			this.isFetching	= true
-			this.dasbor		= (await this.$api.$get(`/v1/api/dasborDesa`)).data
-			if(this.dasbor.belum_kawin===null){
-				this.dasbor	= {
-						"lahir": 0,
-						"mati": 0,
-						"keluar": 0,
-						"datang": 0,
-						"kk": 0,
-						"penduduk": 0,
-						"islam": 0,
-						"kristen": 0,
-						"khatolik": 0,
-						"hindu": 0,
-						"budha": 0,
-						"belum_kawin": 0,
-						"kawin_tercatat": 0,
-						"kawin_belum_tercatat": 0,
-						"cerai_mati": 0,
-						"dusun": this.dasbor.dusun,
-						"desa": this.dasbor.desa,
-						"ganda": []
-					}
-			}
+			this.data		= (await this.$api.$get(`/path/saya?page=0&size=4`)).data.content
 			this.isFetching	= false
 		},
-		handleUpdateDataKecamatan: async function(){
-			this.isFetching	= true
-			this.dasbor		= (await this.$api.$get(`/v1/api/dasborKecamatan`)).data
-			if(this.dasbor.belum_kawin===null){
-				this.dasbor	= {
-						"lahir": 0,
-						"mati": 0,
-						"keluar": 0,
-						"datang": 0,
-						"kk": 0,
-						"penduduk": 0,
-						"islam": 0,
-						"kristen": 0,
-						"khatolik": 0,
-						"hindu": 0,
-						"budha": 0,
-						"belum_kawin": 0,
-						"kawin_tercatat": 0,
-						"kawin_belum_tercatat": 0,
-						"cerai_mati": 0,
-						"dusun": this.dasbor.dusun,
-						"desa": this.dasbor.desa,
-						"ganda": []
-					}
-			}
-			this.isFetching	= false
-		}
 	}
 }
 </script>
