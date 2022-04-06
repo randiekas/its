@@ -80,7 +80,7 @@
                                 mdi-check-decagram
                             </v-icon>
                             <v-icon
-                                v-else-if="detail.path.latihan[index-1].hasil.jumlah_benar<=detail.path.latihan[index-1].minimun_benar">
+                                v-else-if="detail.path.latihan[index-1].hasil.jumlah_benar>=detail.path.latihan[index-1].minimun_benar">
                                 mdi-lock-open-variant
                             </v-icon>
                             <v-icon
