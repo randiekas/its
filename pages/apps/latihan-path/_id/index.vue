@@ -4,12 +4,13 @@
 			<v-container>
 				<Head
 					title="Kelola"
-					subtitle="Buat Latihan Soal Berbasis ITS">
+					:subtitle="`Buat Latihan ${detail.nama}`">
                     <div>
                         <v-btn
                             exact
                             small
-                            class="white">
+                            class="white"
+                            disabled>
                             <v-icon left>
                                 mdi-plus
                             </v-icon>
@@ -33,22 +34,50 @@
 			</v-container>
 		</div>
 		<v-container class="mt-n16">
-            <v-row>
+            <v-row v-if="isFetching" class="mb-8">
+				<v-col sm="3">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
+				<v-col sm="9">
+					<v-card>
+						<v-skeleton-loader
+							class="mx-auto"
+							type="article, table-heading"/>
+					</v-card>
+				</v-col>
+            </v-row>
+            <v-row v-else>
                 <v-col md="3">
                     <v-card>
-                        <v-card-text 
+                        <v-card-text
                             class="mb-3">
                             <v-text-field
                                 label="Nama Latihan Path"
-                                hide-details=""
+                                v-model="detail.nama"
+                                disabled
                                 persistent-placeholder/>
+                            <v-btn
+                                block
+                                disabled>
+                                Simpan
+                            </v-btn>
                         </v-card-text>
                     </v-card>
                 </v-col>
                 <v-col md="9">
-                    <v-card outlined class="mb-3">
+                    <v-card
+                        v-for="(item, index) in detail.latihan"
+                        :key="index"
+                        outlined
+                        hover
+                        :to="`/apps/latihan-path/${id}/peserta?id_latihan=${item.id}`"
+                        class="mb-3">
                         <v-card-title>
-                            Latihan Soal 1
+                            {{ item.nama }}
                             <v-spacer/>
                             <v-btn outlined>
                                 <v-icon>
@@ -56,31 +85,27 @@
                                 </v-icon>
                             </v-btn>
                         </v-card-title>
-                        <v-card-subtitle>
+                        <v-card-subtitle class="d-flex">
                             <v-text-field
-                                label="Minimum Nilai"
+                                disabled
+                                label="Minimum Benar"
                                 persistent-placeholder
                                 hide-details=""
-                                value="10"
+                                v-model="item.minimun_benar"
                                 type="number"/>
-                        </v-card-subtitle>
-                    </v-card>
-                    <v-card outlined>
-                        <v-card-title>
-                            Latihan Soal 2
-                            <v-spacer/>
-                            <v-btn outlined>
-                                <v-icon>
-                                    mdi-delete
-                                </v-icon>
-                            </v-btn>
-                        </v-card-title>
-                        <v-card-subtitle>
                             <v-text-field
-                                label="Minimum Nilai"
+                                disabled
+                                label="Jumlah Soal"
                                 persistent-placeholder
                                 hide-details=""
-                                value="10"
+                                v-model="item.jumlah_soal"
+                                type="number"/>
+                            <v-text-field
+                                disabled
+                                label="Jumlah Peserta"
+                                persistent-placeholder
+                                hide-details=""
+                                v-model="item.jumlah_peserta"
                                 type="number"/>
                         </v-card-subtitle>
                     </v-card>
@@ -93,9 +118,16 @@
 export default {
     layout:'apps',
 	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access' ],
+    asyncData: async function({ route }){
+
+        return {
+            id: route.params.id
+        }
+    },
     data: function(){
         return {
-            tab: 0,
+            isFetching:true,
+			detail: { nama:'-' }
         }
     },
     mounted: function(){
@@ -103,10 +135,12 @@ export default {
     },
     methods: {
         handelLoadData: async function(){
-
+            this.isFetching	= true
+			this.detail	    = (await this.$api.$get(`/path/${this.id}`)).data
+			this.isFetching	= false
         },
         handelClickDetail: function( item ){
-            
+
         },
 
     }

@@ -4,7 +4,7 @@
 			<v-container>
 				<Head
 					:title="detail.path.nama"
-					:subtitle="`${detail.jumlah_latihan} Latihan`">
+					subtitle="Untuk bisa mengikuti ujian selanjutnya, kamu harus menjawab minimum jumlah benar">
                     <div>
                         <v-btn
                             exact
@@ -49,15 +49,20 @@
 			</v-row>
             <template
                 v-if="detail.id">
-                <v-card 
+                <v-card
                     v-for="(item, index) in detail.path.latihan"
                     :key="index"
                     hover
-                    to="/apps/its/1/detail"
+                    @click="handelKlikDetail(index, item)"
                     outlined class="mb-3">
                     <v-card-title>
                         {{ item.nama }}
                         <v-spacer/>
+                        <v-btn
+                            v-if="item.hasil.jumlah_benar"
+                            text>
+                            Jumlah Benar Kamu: {{ item.hasil.jumlah_benar }}
+                        </v-btn>
                         <v-btn text>
                             Minimum benar: {{ item.minimun_benar }}
                         </v-btn>
@@ -65,13 +70,21 @@
                             Soal: {{ item.jumlah_soal }}
                         </v-btn>
                         <v-btn text icon large>
-                            <v-icon 
-                                v-if="index==0"
+                            <v-icon
+                                v-if="index==0 && item.hasil.jumlah_benar==undefined">
+                                mdi-lock-open-variant
+                            </v-icon>
+                            <v-icon
+                                v-else-if="index==0 && item.hasil.jumlah_benar!=undefined"
                                 color="green">
                                 mdi-check-decagram
                             </v-icon>
-                            <v-icon 
-                                v-else> 
+                            <v-icon
+                                v-else-if="detail.path.latihan[index-1].hasil.jumlah_benar<=detail.path.latihan[index-1].minimun_benar">
+                                mdi-lock-open-variant
+                            </v-icon>
+                            <v-icon
+                                v-else>
                                 mdi-lock
                             </v-icon>
                         </v-btn>
@@ -106,6 +119,38 @@ export default {
 			this.detail	    = (await this.$api.$get(`/path/saya/${this.id}`)).data
 			this.isFetching	= false
         },
+        handelKlikDetail: function(index, item){
+            if(item.hasil.jumlah_benar!=undefined){
+                this.setConfirmation({
+                    status: true,
+                    title: 'Oops!',
+                    message: 'Kamu sudah mengikuti latihan ini, silahkan ikuti latihan selanjutnya',
+                    handelOk: ()=> this.setConfirmation({ status: false })
+                })
+                return
+            }else if(index>0){
+                const sebelumnya    = this.detail.path.latihan[index-1]
+                if(sebelumnya.hasil.jumlah_benar==undefined){
+                    this.setConfirmation({
+                        status: true,
+                        title: 'Oops!',
+                        message: 'Kamu belum mengikuti latihan sebelumnya',
+                        handelOk: ()=> this.setConfirmation({ status: false })
+                    })
+                    return
+                }
+                else if(sebelumnya.hasil.jumlah_benar<sebelumnya.minimun_benar){
+                    this.setConfirmation({
+                        status: true,
+                        title: 'Oops!',
+                        message: 'Jumlah benar di latihan sebelumnya tidak memenuhi nilai minimum',
+                        handelOk: ()=> this.setConfirmation({ status: false })
+                    })
+                    return
+                }
+            }
+            this.$router.push(`/apps/its/${this.id}/detail?id_latihan=${item.id}`)
+        }
     }
 }
 </script>

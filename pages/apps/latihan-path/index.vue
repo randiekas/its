@@ -9,6 +9,7 @@
                         exact
                         small
                         class="white"
+                        disabled
                         to="/apps/latihan-path/create">
                         <v-icon left>
                             mdi-account-plus
@@ -74,6 +75,7 @@
                     :items="table.data"
                     item-key="id"
                     disable-sort
+                    @click:row="handelClickDetail"
                     :loading="isFetching"
                     :options.sync="options"
                     :server-items-length="table.count"
@@ -87,18 +89,13 @@
                     <template v-slot:[`item.updated_at`]="{ item }">
                         {{ item.updated_at?$moment(item.updated_at).format('DD/MM/YYYY'):'-' }}
                     </template>
-                    <template v-slot:[`item.aksi`]="{ item }">
-                        <v-btn 
+                    <!-- <template v-slot:[`item.aksi`]="{ item }">
+                        <v-btn
                             :to="`/apps/latihan-path/${item.id}/kelola`"
                             x-small>
-                            Kelola
+                            Detail
                         </v-btn>
-                        <v-btn 
-                            :to="`/apps/latihan-path/${item.id}/peserta`"
-                            x-small>
-                            Peserta
-                        </v-btn>
-                    </template>
+                    </template> -->
                     <template v-slot:[`item.status`]="{ item }">
                         <v-chip v-if="item.status" small class="success">Active</v-chip>
                         <v-chip v-else small class="warning">Inactive</v-chip>
@@ -123,7 +120,7 @@ export default {
             filterName: '',
             filterCreatedAt: '',
             filterStatus: '',
-            
+
             options: {},
             isFetching: false,
             table:{
@@ -136,12 +133,12 @@ export default {
                         value: 'no',
                     },
                     { text: 'Nama', value: 'nama' },
-                    { text: 'Jumlah Latihan', value: 'jumlah_soal' },
+                    { text: 'Jumlah Latihan', value: 'jumlah_latihan' },
                     { text: 'Jumlah Peserta', value: 'jumlah_peserta' },
                     { text: 'Created', value: 'created_at' },
                     { text: 'Updated', value: 'updated_at' },
                     { text: 'Status', value: 'status' },
-                    { text: '', value: 'aksi' },
+                    // { text: '', value: 'aksi' },
                 ],
                 data:[]
             },
@@ -171,31 +168,9 @@ export default {
             if(query.length>0){
                 query           = `&query=${query.join(',')}`
             }
-            // const data          = (await this.$api.$get(`admin/foundation/role?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
 
-            const data          = { 
-                content:[
-                    {
-                        id: 1,
-                        nama: 'Latihan Fisika 1',
-                        jumlah_soal: 20,
-                        jumlah_peserta:30,
-                        status: 1,
-                        dibuat: '2022-03-26 08:56:13',
-                        diubah: '2022-03-26 08:56:13',
-                    },
-                    {
-                        id: 2,
-                        nama: 'Latihan Fisika 2',
-                        jumlah_soal: 20,
-                        jumlah_peserta:30,
-                        status: 0,
-                        dibuat: '2022-03-26 08:56:13',
-                        diubah: '2022-03-26 08:56:13',
-                    }
-                ], 
-                count:2
-            }
+            const data          = (await this.$api.$get(`path?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
+
             this.table.data     = data.content
             this.table.count    = eval(data.count)
             this.isFetching     = false

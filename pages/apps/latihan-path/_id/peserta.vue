@@ -1,13 +1,62 @@
 <template>
     <div class="grey lighten-4 fill-height mb-16">
+        <v-dialog
+            v-model="popup"
+            persistent
+            width="600">
+            <v-card>
+                <v-card-title>Rincian Jawaban Siswa</v-card-title>
+                <v-card-text>
+                <v-card
+                    v-for="(item, index) in data"
+                    :key="index"
+                    class="mb-4"
+                    outlined>
+                    <v-card-title>
+                        Soal
+                        <v-spacer/>
+                        {{index+1}}/{{ data.length }}
+                    </v-card-title>
+                    <v-divider/>
+                    <v-card-text>
+                        <div
+                            class="mb-4"
+                            v-html="item.soal"/>
+                        Jumlah Percobaan: {{ item.jawaban.jumlah_percobaan }}
+                        <!-- <div
+                            v-for="(row, index) in JSON.parse(item.jawaban.percobaan)"
+                            :key="index">
+                            <v-text-field
+                                persistent-placeholder
+                                outlined
+                                dense
+                                v-model="row.jawabanSiswa"
+                                :prefix="`${row.label} = `"
+                                :success="row.status==1"
+                                :error="row.status==0"
+                                :append-icon="ikonStatus[item.status]"/>
+                        </div> -->
+                    </v-card-text>
+                </v-card>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer/>
+                    <v-btn
+                        outlined
+                        @click="popup=false">
+                        Tutup
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
 		<div class="primary pb-16">
 			<v-container>
 				<Head
 					title="Peserta"
 					subtitle="Kelola data latihan berbasis ITS">
                     <div>
-                        <v-btn 
-                            small 
+                        <v-btn
+                            small
                             class="white">
                             <v-icon left>
                                 mdi-share-variant
@@ -46,7 +95,7 @@
                         </v-col>
                         <v-col>
                             <v-text-field
-                                label="ID Peserta"
+                                label="Email Peserta"
                                 v-model="filterName"
                                 v-on:keyup.enter="handelLoadData"
                                 placeholder="Tulis disini ..."
@@ -98,15 +147,11 @@
                         {{ item.updated_at?$moment(item.updated_at).format('DD/MM/YYYY'):'-' }}
                     </template>
                     <template v-slot:[`item.aksi`]="{ item }">
-                        <v-btn 
-                            :to="`/apps/latihan/${item.id}/kelola`"
+                        <v-btn
+                            rounded
+                            @click="handelDetail(item)"
                             x-small>
-                            Kelola
-                        </v-btn>
-                        <v-btn 
-                            :to="`/apps/latihan/${item.id}/peserta`"
-                            x-small>
-                            Peserta
+                            Detail
                         </v-btn>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
@@ -127,13 +172,20 @@
 export default {
     layout:'apps',
 	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access' ],
+    asyncData: async function({ route }){
+
+        return {
+            id: route.params.id,
+            latihan_id: route.query.id_latihan,
+        }
+    },
     data: function(){
         return {
             filterID: '',
             filterName: '',
             filterCreatedAt: '',
             filterStatus: '',
-            
+
             options: {},
             isFetching: false,
             table:{
@@ -145,14 +197,21 @@ export default {
                         sortable: false,
                         value: 'no',
                     },
-                    { text: 'ID Peserta', value: 'id' },
-                    { text: 'Nama', value: 'nama' },
-                    { text: 'Terselesaikan', value: 'selesai' },
+                    { text: 'Nama', value: 'akun.email' },
+                    { text: 'Email', value: 'akun.nama' },
+                    { text: 'Jumlah Benar', value: 'jumlah_benar' },
                     { text: 'Mengikuti Pada', value: 'created_at' },
-                    // { text: '', value: 'aksi' },
+                    { text: '', value: 'aksi' },
                 ],
                 data:[]
             },
+            data: [],
+            popup: false,
+            ikonStatus: {
+                0: 'mdi-close-circle',
+                1: 'mdi-check-decagram',
+                'undefined': '',
+            }
         }
     },
     mounted: function(){
@@ -179,35 +238,17 @@ export default {
             if(query.length>0){s
                 query           = `&query=${query.join(',')}`
             }
-            // const data          = (await this.$api.$get(`admin/foundation/role?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
 
-            const data          = { 
-                content:[
-                    {
-                        id: 1202144193,
-                        nama: 'Randi Eka Setiawan',
-                        selesai: "3/3",
-                        status: 1,
-                        dibuat: '2022-03-26 08:56:13',
-                        diubah: '2022-03-26 08:56:13',
-                    },
-                    {
-                        id: 1202144193,
-                        nama: 'Christopher David',
-                        selesai: "2/3",
-                        status: 0,
-                        dibuat: '2022-03-26 08:56:13',
-                        diubah: '2022-03-26 08:56:13',
-                    }
-                ], 
-                count:2
-            }
+            const data          = (await this.$api.$get(`path/${this.id}/latihan/${this.latihan_id}/peserta?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
+
             this.table.data     = data.content
             this.table.count    = eval(data.count)
             this.isFetching     = false
         },
-        handelClickDetail: function( item ){
-            this.$router.push(`/apps/latihan/${item.id}`);
+        handelDetail: async function( item ){
+            this.data   = []
+            this.popup  = true
+            this.data   = (await this.$api.$get(`path/${this.id}/latihan/${this.latihan_id}/peserta/${item.id}`)).data
         },
 
     }

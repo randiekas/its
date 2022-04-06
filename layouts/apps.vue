@@ -1,10 +1,52 @@
 <template>
 	<v-app>
+        <v-dialog
+		v-model="isFetching"
+		persistent
+		width="300">
+		<v-card
+			color="primary"
+			dark>
+			<v-card-text>
+			Sedang diproses ...
+			<v-progress-linear
+				indeterminate
+				color="white"
+				class="mb-0"
+			></v-progress-linear>
+			</v-card-text>
+		</v-card>
+	</v-dialog>
+	<v-dialog
+		v-model="confirmation.status"
+		persistent
+		width="450">
+		<v-card
+			color="primary"
+			dark>
+            <v-card-title>{{ confirmation.title }}</v-card-title>
+			<v-card-text>
+                {{ confirmation.message }}
+			</v-card-text>
+            <v-card-actions>
+                <v-spacer/>
+                <v-btn
+                    text
+                    @click="confirmation.status=false">
+                    Cancel
+                </v-btn>
+                <v-btn
+                    outlined
+                    @click="confirmation.handelOk(); confirmation.status=false">
+                    Continue
+                </v-btn>
+            </v-card-actions>
+		</v-card>
+	</v-dialog>
 		<v-navigation-drawer
 			permanent
 			expand-on-hover
 			app>
-
 			<v-list>
 				<v-list-item class="px-2">
 					<v-list-item-avatar>
@@ -61,12 +103,14 @@
 		</v-navigation-drawer>
 
 		<v-main>
-			
+
 			<nuxt-child
                 :apps="apps[tipe]"
 				:tipe="tipe"
-				:handelKeluar="handelKeluar"/>
-			
+				:setConfirmation="(item)=>confirmation=item"
+                :handelKeluar="handelKeluar"
+                :setFetching="setFetching"/>
+
 		</v-main>
 	</v-app>
 </template>
@@ -77,11 +121,18 @@ export default {
 		let user = this.$auth.user
 		let tipe = this.$auth.$storage.getUniversal("loginType")
 		if(!user){
-			this.$router.push(`/`) 
+			this.$router.push(`/`)
 		}
 		return {
 			user,
 			tipe,
+            isFetching: false,
+			confirmation: {
+                status: false,
+                title: '',
+                message: '',
+                handelOk: ()=>{},
+            },
 			apps:{
 				'umum': [
 					{
@@ -179,7 +230,10 @@ export default {
 	methods:{
 		handelKeluar: async function(){
             await this.$auth.logout()
-        }
+        },
+        setFetching: function(status){
+            this.isFetching = status
+        },
 	}
 }
 </script>
