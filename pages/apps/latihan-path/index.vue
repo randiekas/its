@@ -9,8 +9,7 @@
                         exact
                         small
                         class="white"
-                        disabled
-                        to="/apps/latihan-path/create">
+                        @click="popup=true">
                         <v-icon left>
                             mdi-account-plus
                         </v-icon>
@@ -29,7 +28,7 @@
                         <v-col>
                             <v-text-field
                                 label="Nama Latihan"
-                                v-model="filterName"
+                                v-model="filterNama"
                                 v-on:keyup.enter="handelLoadData"
                                 placeholder="Tulis disini ..."
                                 persistent-placeholder
@@ -38,7 +37,7 @@
                         <v-col>
                             <v-text-field
                                 type="date"
-                                v-model="filterCreatedAt"
+                                v-model="filterDibuat"
                                 v-on:keyup.enter="handelLoadData"
                                 label="Dibuat pada"
                                 value="06 Sep 2020"
@@ -108,6 +107,46 @@
                 </v-data-table>
             </v-card>
 		</v-container>
+
+        <v-dialog
+			v-model="popup"
+			persistent
+			max-width="600px">
+			<v-card>
+				<v-card-title>
+				</v-card-title>
+				<v-card-text>
+					<v-container>
+						<v-row>
+							<v-col cols="12">
+								<v-text-field
+                                    v-model="form.nama"
+									dense
+									label="Nama Path"
+									outlined
+									required/>
+							</v-col>
+
+						</v-row>
+					</v-container>
+				</v-card-text>
+				<v-card-actions>
+				<v-spacer></v-spacer>
+				<v-btn
+					color="blue darken-1"
+					text
+					@click="popup = false">
+					Close
+				</v-btn>
+				<v-btn
+					color="blue darken-1"
+					text
+					@click="handelSimpanForm()">
+					Simpan
+				</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 <script>
@@ -116,9 +155,8 @@ export default {
 	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access' ],
     data: function(){
         return {
-            filterID: '',
-            filterName: '',
-            filterCreatedAt: '',
+            filterNama: '',
+            filterDibuat: '',
             filterStatus: '',
 
             options: {},
@@ -142,6 +180,8 @@ export default {
                 ],
                 data:[]
             },
+            popup: false,
+            form: {},
         }
     },
     mounted: function(){
@@ -153,14 +193,11 @@ export default {
             this.isFetching = true
 
             let query       = []
-            if(this.filterID){
-                query.push(`id:${this.filterID}`)
+            if(this.filterNama){
+                query.push(`nama:ilike.${this.filterNama}`)
             }
-            if(this.filterName){
-                query.push(`name:ilike.${this.filterName}`)
-            }
-            if(this.filterCreatedAt){
-                query.push(`created_at:date.${this.filterCreatedAt}`)
+            if(this.filterDibuat){
+                query.push(`dibuat:date.${this.filterDibuat}`)
             }
             if(this.filterStatus.toString()){
                 query.push(`status:${this.filterStatus}`)
@@ -177,6 +214,21 @@ export default {
         },
         handelClickDetail: function( item ){
             this.$router.push(`/apps/latihan-path/${item.id}`);
+        },
+        handelResetForm: function(){
+            this.form   = {
+                nama: '',
+            }
+        },
+        handelSimpanForm: function(){
+            this.setFetching(true)
+            this.$api.$post(`path`, this.form).then((resp)=>{
+                this.popup = false
+                this.setFetching(false)
+                this.setSnackbar("Latihan path berhasil ditambahkan, silahkan import latihan soal")
+                this.$router.push(`/apps/latihan-path/${resp.data}`);
+            })
+            // this.dialog = false
         },
 
     }

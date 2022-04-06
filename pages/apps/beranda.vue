@@ -70,18 +70,25 @@
 				</v-col>
 			</v-row>
 			<v-row v-else class="mb-8">
-				<v-col 
-					v-for="(item, index) in data"
-					:key="index"
-					md="3">
-					<v-card
-						hover
-						:to="`/apps/its/${item.id}`">
-						<v-card-title>{{ item.path.nama }}</v-card-title>
-						<v-card-subtitle>{{ item.path.jumlah_peserta}} Peserta</v-card-subtitle>
-						<v-card-subtitle>{{ item.path.jumlah_latihan}} Latihan Soal</v-card-subtitle>
-					</v-card>
+				<v-col
+					v-if="data.length>=0">
+					<v-alert type="info">Anda belum memiliki ITS</v-alert>
 				</v-col>
+				<template
+					v-else>
+					<v-col 
+						v-for="(item, index) in data"
+						:key="index"
+						md="3">
+						<v-card
+							hover
+							:to="`/apps/its/${item.id}`">
+							<v-card-title>{{ item.path.nama }}</v-card-title>
+							<v-card-subtitle>{{ item.path.jumlah_peserta}} Peserta</v-card-subtitle>
+							<v-card-subtitle>{{ item.path.jumlah_latihan}} Latihan Soal</v-card-subtitle>
+						</v-card>
+					</v-col>
+				</template>
 			</v-row>
 			<p class="white--text text-overline">Buat Latihan Soal Berbasis ITS mu sendiri</p>
 		</v-container>

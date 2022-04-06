@@ -1,48 +1,66 @@
 <template>
 	<v-app>
         <v-dialog
-		v-model="isFetching"
-		persistent
-		width="300">
-		<v-card
-			color="primary"
-			dark>
-			<v-card-text>
-			Sedang diproses ...
-			<v-progress-linear
-				indeterminate
-				color="white"
-				class="mb-0"
-			></v-progress-linear>
-			</v-card-text>
-		</v-card>
-	</v-dialog>
-	<v-dialog
-		v-model="confirmation.status"
-		persistent
-		width="450">
-		<v-card
-			color="primary"
-			dark>
-            <v-card-title>{{ confirmation.title }}</v-card-title>
-			<v-card-text>
-                {{ confirmation.message }}
-			</v-card-text>
-            <v-card-actions>
-                <v-spacer/>
-                <v-btn
-                    text
-                    @click="confirmation.status=false">
-                    Cancel
-                </v-btn>
-                <v-btn
-                    outlined
-                    @click="confirmation.handelOk(); confirmation.status=false">
-                    Continue
-                </v-btn>
-            </v-card-actions>
-		</v-card>
-	</v-dialog>
+			v-model="isFetching"
+			persistent
+			width="300">
+			<v-card
+				color="primary"
+				dark>
+				<v-card-text>
+				Sedang diproses ...
+				<v-progress-linear
+					indeterminate
+					color="white"
+					class="mb-0"
+				></v-progress-linear>
+				</v-card-text>
+			</v-card>
+		</v-dialog>
+		<v-dialog
+			v-model="confirmation.status"
+			persistent
+			width="450">
+			<v-card
+				color="primary"
+				dark>
+				<v-card-title>{{ confirmation.title }}</v-card-title>
+				<v-card-text>
+					{{ confirmation.message }}
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer/>
+					<v-btn
+						text
+						@click="confirmation.status=false">
+						Cancel
+					</v-btn>
+					<v-btn
+						outlined
+						@click="confirmation.handelOk(); confirmation.status=false">
+						Continue
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+		<v-snackbar
+			top
+			right
+			v-if="snackbar!==false"
+			v-model="snackbar.status"
+			timeout="2000">
+			{{ snackbar.message }}
+			<template v-slot:action="{ attrs }">
+				<v-btn
+				color="red"
+				text
+				v-bind="attrs"
+				@click="snackbar = false">
+				Close
+				</v-btn>
+			</template>
+
+		</v-snackbar>
 		<v-navigation-drawer
 			permanent
 			expand-on-hover
@@ -107,9 +125,10 @@
 			<nuxt-child
                 :apps="apps[tipe]"
 				:tipe="tipe"
-				:setConfirmation="(item)=>confirmation=item"
+				:setConfirmation="setConfirmation"
                 :handelKeluar="handelKeluar"
-                :setFetching="setFetching"/>
+                :setFetching="setFetching"
+				:setSnackbar="setSnackbar"/>
 
 		</v-main>
 	</v-app>
@@ -127,6 +146,10 @@ export default {
 			user,
 			tipe,
             isFetching: false,
+			snackbar: {
+                status: false,
+                message: ''
+            },
 			confirmation: {
                 status: false,
                 title: '',
@@ -231,9 +254,9 @@ export default {
 		handelKeluar: async function(){
             await this.$auth.logout()
         },
-        setFetching: function(status){
-            this.isFetching = status
-        },
+		setFetching: function (status){this.isFetching=status},
+		setSnackbar: function (message){this.snackbar={status: true, message}},
+		setConfirmation: function (item){this.confirmation=item},
 	}
 }
 </script>

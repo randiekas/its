@@ -9,12 +9,11 @@
                         <v-btn
                             exact
                             small
-                            class="white"
-                            disabled>
+                            class="white">
                             <v-icon left>
-                                mdi-plus
+                                mdi-import
                             </v-icon>
-                            Tambah Latihan Soal
+                            Import Latihan Soal
                         </v-btn>
                         <v-btn
                             exact
@@ -58,17 +57,20 @@
                             <v-text-field
                                 label="Nama Latihan Path"
                                 v-model="detail.nama"
-                                disabled
                                 persistent-placeholder/>
                             <v-btn
+                                class="primary"
+                                rounded
                                 block
-                                disabled>
+                                @click="handelSimpan">
                                 Simpan
                             </v-btn>
                         </v-card-text>
                     </v-card>
                 </v-col>
-                <v-col md="9">
+                <v-col 
+                    v-if="detail.latihan.length>0"
+                    md="9">
                     <v-card
                         v-for="(item, index) in detail.latihan"
                         :key="index"
@@ -110,6 +112,14 @@
                         </v-card-subtitle>
                     </v-card>
                 </v-col>
+                <v-col 
+                    v-else
+                    md="9">
+                    <v-alert
+                        type="info">
+                        Latihan belum di set, silahkan import latihan soal terlebih dahulu
+                    </v-alert>
+                </v-col>
             </v-row>
 		</v-container>
 	</div>
@@ -139,8 +149,14 @@ export default {
 			this.detail	    = (await this.$api.$get(`/path/${this.id}`)).data
 			this.isFetching	= false
         },
-        handelClickDetail: function( item ){
-
+        handelSimpan: function( item ){
+            this.setFetching(true)
+            this.$api.$put(`path/${this.id}`, {
+                nama: this.detail.nama
+            }).then((resp)=>{
+                this.setSnackbar("Nama path berhasil diubah")
+                this.setFetching(false)
+            })
         },
 
     }
