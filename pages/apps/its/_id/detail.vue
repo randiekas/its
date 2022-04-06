@@ -98,8 +98,8 @@
                                         @click="hint=true"
                                         block>Lihat Hints</v-btn>
                                     <div
-                                        v-if="hint">
-                                        {{ soal.hint }}
+                                        v-if="hint"
+                                        v-html="soal.hint">
                                     </div>
                                 </v-tab-item>
                                 <v-tab-item>
