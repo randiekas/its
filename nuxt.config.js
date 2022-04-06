@@ -146,7 +146,7 @@ export default {
 	},
 
 	env: {
-		API_URL: process.env.API_URL,
+		API_URL: "http://13.212.251.224",
 		// FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
 		FRONTEND_URL: process.env.FRONTEND_URL,
 	},
