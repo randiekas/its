@@ -23,19 +23,22 @@
                             class="mb-4"
                             v-html="item.soal"/>
                         Jumlah Percobaan: {{ item.jawaban.jumlah_percobaan }}
-                        <!-- <div
-                            v-for="(row, index) in JSON.parse(item.jawaban.percobaan)"
-                            :key="index">
+                        <div
+                            v-for="(row, key) in JSON.parse(item.jawaban.percobaan)"
+                            :key="key">
+                            <v-subheader>Percobaan {{key+1}}</v-subheader>
                             <v-text-field
+                                v-for="(row2, key2) in row"
+                                :key="key2"
                                 persistent-placeholder
                                 outlined
                                 dense
-                                v-model="row.jawabanSiswa"
-                                :prefix="`${row.label} = `"
-                                :success="row.status==1"
-                                :error="row.status==0"
-                                :append-icon="ikonStatus[item.status]"/>
-                        </div> -->
+                                v-model="row2.jawabanSiswa"
+                                :prefix="`${row2.label} = `"
+                                :success="row2.status==1"
+                                :error="row2.status==0"
+                                :append-icon="ikonStatus[row2.status]"/>
+                        </div>
                     </v-card-text>
                 </v-card>
                 </v-card-text>
