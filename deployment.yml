@@ -18,13 +18,16 @@ spec:
         ports:
         - containerPort: 3000
 ---
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
   name: idisi
 spec:
-  ports:
-    - port: 80
-      targetPort: 3000
   selector:
     app: idisi
+  ports:
+  - protocol: TCP
+    port: 80
+    NodePort: 30443
+    targetPort: 3000
+    type: NodePort
