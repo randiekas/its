@@ -34,11 +34,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: idisi
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-  - http:
-      paths:
-      - path: /
-        backend:
-          serviceName: idisi
-          servicePort: 80
+    - host: localhost
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: idisi
+                port:
+                  number: 80
