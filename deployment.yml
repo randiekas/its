@@ -29,4 +29,23 @@ spec:
   type: LoadBalancer
   selector:
     app: idisi
-    
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: idisi
+spec:
+  ingressClassName: idisi
+  rules:
+  - host: PREFIX.CLUSTER_ID.k8s.gigantic.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          serviceName: idisi
+          servicePort: 80
+          service:
+            name: idisi
+            port:
+              number: 80
