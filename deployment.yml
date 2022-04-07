@@ -24,10 +24,10 @@ metadata:
   name: idisi
 spec:
   ports:
-    - name: http
+    - protocol: TCP
       port: 80
       targetPort: 3000
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: idisi
 ---
