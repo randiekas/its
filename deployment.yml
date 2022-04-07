@@ -29,7 +29,16 @@ spec:
   type: LoadBalancer
   selector:
     app: idisi
-status:
-  loadBalancer:
-    ingress:
-    - ip: 13.250.101.28
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: http-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: idisi
+          servicePort: 80
