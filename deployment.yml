@@ -25,7 +25,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 3000
+      port: 80
       targetPort: 3000
   type: ClusterIP
   selector:
@@ -48,4 +48,4 @@ spec:
               service:
                 name: idisi
                 port:
-                  number: 3000
+                  number: 80
