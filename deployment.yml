@@ -39,7 +39,7 @@ metadata:
       service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 spec:
   rules:
-    - host: ec2-3-0-18-62.ap-southeast-1.compute.amazonaws.com
+    - host: ec2-13-250-101-28.ap-southeast-1.compute.amazonaws.com
       http:
         paths:
           - path: /
