@@ -7,6 +7,7 @@
 					:subtitle="`Buat Latihan ${detail.nama}`">
                     <div>
                         <v-btn
+                            @click="popup = true"
                             exact
                             small
                             class="white">
@@ -122,6 +123,62 @@
                 </v-col>
             </v-row>
 		</v-container>
+
+        <v-dialog
+			v-model="popup"
+			persistent
+			max-width="600px">
+			<v-card>
+				<v-card-title>
+				</v-card-title>
+				<v-card-text>
+					<v-container>
+                        <v-list dense>
+                            <v-list-item-group
+                                v-model="latihanDipilih"
+                                multiple>
+                                <template v-for="(item, index) in latihan">
+                                <v-divider
+                                    v-if="index"
+                                    :key="`divider-${index}`"/>
+                                <v-list-item
+                                    :key="`item-${index}`"
+                                    :value="item.id"
+                                    active-class="deep-purple--text text--accent-4">
+                                    <template v-slot:default="{ active }">
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.nama"></v-list-item-title>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-checkbox
+                                        :input-value="active"
+                                        color="deep-purple accent-4"/>
+                                    </v-list-item-action>
+                                    </template>
+                                </v-list-item>
+                                </template>
+                            </v-list-item-group>
+                            </v-list>
+					</v-container>
+				</v-card-text>
+				<v-card-actions>
+				<v-spacer></v-spacer>
+				<v-btn
+					color="blue darken-1"
+					text
+					@click="popup = false">
+					Batal
+				</v-btn>
+				<v-btn
+					color="blue darken-1"
+					text
+					@click="handelImport()">
+					Import
+				</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 	</div>
 </template>
 <script>
@@ -136,8 +193,18 @@ export default {
     },
     data: function(){
         return {
+            popup: false,
             isFetching:true,
-			detail: { nama:'-' }
+			detail: { nama:'-' },
+            items: [
+                'Dog Photos',
+                'Cat Photos',
+                '',
+                'Potatoes',
+                'Carrots',
+            ],
+            latihan: [],
+            latihanDipilih:[]
         }
     },
     mounted: function(){
@@ -148,6 +215,8 @@ export default {
             this.isFetching	= true
 			this.detail	    = (await this.$api.$get(`/path/${this.id}`)).data
 			this.isFetching	= false
+
+            this.latihan    = (await this.$api.$get(`latihan?page=0&size=10000`)).data.content
         },
         handelSimpan: function( item ){
             this.setFetching(true)
@@ -155,6 +224,17 @@ export default {
                 nama: this.detail.nama
             }).then((resp)=>{
                 this.setSnackbar("Nama path berhasil diubah")
+                this.setFetching(false)
+            })
+        },
+        handelImport: function( item ){
+            this.setFetching(true)
+            this.$api.$post(`path/${this.id}/latihan`, {
+                latihan_id: this.latihanDipilih
+            }).then((resp)=>{
+                this.popup  = false
+                this.handelLoadData()
+                this.setSnackbar("latihan berhasil ditambahkan")
                 this.setFetching(false)
             })
         },

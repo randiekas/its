@@ -28,7 +28,7 @@
                         <v-col>
                             <v-text-field
                                 label="Nama Latihan"
-                                v-model="filterName"
+                                v-model="filterNama"
                                 v-on:keyup.enter="handelLoadData"
                                 placeholder="Tulis disini ..."
                                 persistent-placeholder
@@ -37,7 +37,7 @@
                         <v-col>
                             <v-text-field
                                 type="date"
-                                v-model="filterCreatedAt"
+                                v-model="filterDibuat"
                                 v-on:keyup.enter="handelLoadData"
                                 label="Dibuat pada"
                                 value="06 Sep 2020"
@@ -119,9 +119,8 @@ export default {
 	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access' ],
     data: function(){
         return {
-            filterID: '',
-            filterName: '',
-            filterCreatedAt: '',
+            filterNama: '',
+            filterDibuat: '',
             filterStatus: '',
             
             options: {},
@@ -156,14 +155,11 @@ export default {
             this.isFetching = true
 
             let query       = []
-            if(this.filterID){
-                query.push(`id:${this.filterID}`)
+            if(this.filterNama){
+                query.push(`nama:ilike.${this.filterName}`)
             }
-            if(this.filterName){
-                query.push(`name:ilike.${this.filterName}`)
-            }
-            if(this.filterCreatedAt){
-                query.push(`created_at:date.${this.filterCreatedAt}`)
+            if(this.dibuat){
+                query.push(`dibuat:date.${this.filterCreatedAt}`)
             }
             if(this.filterStatus.toString()){
                 query.push(`status:${this.filterStatus}`)
@@ -171,31 +167,8 @@ export default {
             if(query.length>0){
                 query           = `&query=${query.join(',')}`
             }
-            // const data          = (await this.$api.$get(`admin/foundation/role?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
+            const data          = (await this.$api.$get(`latihan?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
 
-            const data          = { 
-                content:[
-                    {
-                        id: 1,
-                        nama: 'Latihan Fisika 1',
-                        jumlah_soal: 20,
-                        jumlah_peserta:30,
-                        status: 1,
-                        dibuat: '2022-03-26 08:56:13',
-                        diubah: '2022-03-26 08:56:13',
-                    },
-                    {
-                        id: 2,
-                        nama: 'Latihan Fisika 2',
-                        jumlah_soal: 20,
-                        jumlah_peserta:30,
-                        status: 0,
-                        dibuat: '2022-03-26 08:56:13',
-                        diubah: '2022-03-26 08:56:13',
-                    }
-                ], 
-                count:2
-            }
             this.table.data     = data.content
             this.table.count    = eval(data.count)
             this.isFetching     = false
