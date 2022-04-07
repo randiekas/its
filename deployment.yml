@@ -38,7 +38,7 @@ metadata:
     nginx.ingress.kubernetes.io/upstream-hash-by: "$arg_predictorid"
     nginx.ingress.kubernetes.io/upstream-hash-by-subset: "true"
     nginx.ingress.kubernetes.io/upstream-hash-by-subset-size: "3"
-  name: nginxhello-ingress
+  name: idisi
   namespace: default
 spec:
   ingressClassName: nginx
