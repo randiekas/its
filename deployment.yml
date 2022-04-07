@@ -35,8 +35,14 @@ kind: Ingress
 metadata:
   name: idisi
 spec:
-  defaultBackend:
-    service:
-      name: idisi
-      port:
-        number: 3000
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /foo
+        pathType: Prefix
+        backend:
+          service:
+            name: idisi
+            port:
+              number: 3000
