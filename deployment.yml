@@ -36,7 +36,7 @@ metadata:
   name: idisi
 spec:
   rules:
-  - host: test.kaloli.id
+  - host: localhost
     http:
       paths:
       - path: /
