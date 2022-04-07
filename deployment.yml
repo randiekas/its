@@ -35,10 +35,8 @@ kind: Ingress
 metadata:
   name: idisi
 spec:
-  rules:
-  - http:
-      paths:
-      - path: /
-        backend:
-          serviceName: idisi
-          servicePort: 80
+  defaultBackend:
+    service:
+      name: idisi
+      port:
+        number: 80
