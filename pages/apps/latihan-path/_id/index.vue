@@ -76,16 +76,26 @@
                         v-for="(item, index) in detail.latihan"
                         :key="index"
                         outlined
-                        hover
-                        :to="`/apps/latihan-path/${id}/peserta?id_latihan=${item.id}`"
                         class="mb-3">
                         <v-card-title>
                             {{ item.nama }}
                             <v-spacer/>
-                            <v-btn outlined>
+                            <v-btn 
+                                outlined
+                                @click="handelHapusLatihan(item.id)"
+                                icon>
                                 <v-icon>
                                     mdi-delete
                                 </v-icon>
+                            </v-btn>
+                            <v-btn 
+                                class="ml-2"
+                                outlined
+                                :to="`/apps/latihan-path/${id}/peserta?id_latihan=${item.id}`">
+                                <v-icon left>
+                                    mdi-account-group-outline
+                                </v-icon>
+                                Peserta
                             </v-btn>
                         </v-card-title>
                         <v-card-subtitle class="d-flex">
@@ -236,6 +246,26 @@ export default {
                 this.handelLoadData()
                 this.setSnackbar("latihan berhasil ditambahkan")
                 this.setFetching(false)
+            })
+        },
+
+        handelHapusLatihan: function( id ){
+            this.setConfirmation({
+                status: true,
+                title: 'Konfirmasi',
+                message: 'Apakah kamu yakin ingin menghapus latihan ini ?',
+                handelOk: ()=> {
+                    this.setConfirmation({ status: false })
+                    this.setFetching(true)
+                    this.$api.$delete(`path/${this.id}/latihan/${id}`, {
+                        latihan_id: this.latihanDipilih
+                    }).then((resp)=>{
+                        this.popup  = false
+                        this.handelLoadData()
+                        this.setSnackbar("latihan berhasil ditambahkan")
+                        this.setFetching(false)
+                    })
+                }
             })
         },
 

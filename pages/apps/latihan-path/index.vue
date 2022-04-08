@@ -223,6 +223,7 @@ export default {
         handelSimpanForm: function(){
             this.setFetching(true)
             this.$api.$post(`path`, this.form).then((resp)=>{
+                this.handelResetForm()
                 this.popup = false
                 this.setFetching(false)
                 this.setSnackbar("Latihan path berhasil ditambahkan, silahkan import latihan soal")

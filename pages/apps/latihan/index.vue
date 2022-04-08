@@ -111,6 +111,54 @@
                 </v-data-table>
             </v-card>
 		</v-container>
+
+        <v-dialog
+			v-model="popup"
+			persistent
+			max-width="600px">
+			<v-card>
+				<v-card-title>
+				</v-card-title>
+				<v-card-text>
+					<v-container>
+						<v-row>
+							<v-col cols="12">
+								<v-text-field
+                                    v-model="form.nama"
+									dense
+									label="Nama Path"
+									outlined
+									required/>
+                                <v-text-field
+                                    v-model="form.minimun_benar"
+                                    type="number"
+									dense
+									label="Nama Path"
+									outlined
+									required/>
+							</v-col>
+
+						</v-row>
+					</v-container>
+				</v-card-text>
+				<v-card-actions>
+				<v-spacer></v-spacer>
+				<v-btn
+					color="blue darken-1"
+					text
+					@click="popup = false">
+					Close
+				</v-btn>
+				<v-btn
+					color="blue darken-1"
+					text
+					@click="handelSimpanForm()">
+					Simpan
+				</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+        
 	</div>
 </template>
 <script>
@@ -142,7 +190,9 @@ export default {
                     { text: 'Status', value: 'status' },
                     { text: '', value: 'aksi' },
                 ],
-                data:[]
+                data:[],
+                popup: false,
+                form: {},
             },
         }
     },
@@ -175,6 +225,23 @@ export default {
         },
         handelClickDetail: function( item ){
             this.$router.push(`/apps/latihan/${item.id}`);
+        },
+        handelResetForm: function(){
+            this.form   = {
+                nama: '',
+                minimun_benar: 0
+            }
+        },
+        handelSimpanForm: function(){
+            this.setFetching(true)
+            this.$api.$post(`path`, this.form).then((resp)=>{
+                this.handelResetForm()
+                this.popup = false
+                this.setFetching(false)
+                this.setSnackbar("Latihan berhasil ditambahkan, silahkan import latihan soal")
+                this.$router.push(`/apps/latihan-path/${resp.data}`);
+            })
+            // this.dialog = false
         },
 
     }
