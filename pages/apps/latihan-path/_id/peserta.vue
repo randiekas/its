@@ -35,8 +35,8 @@
                                 dense
                                 v-model="row2.jawabanSiswa"
                                 :prefix="`${row2.label} = `"
-                                :success="row2.status==1"
-                                :error="row2.status==0"
+                                :success="row2.status===1"
+                                :error="row2.status===0"
                                 :append-icon="ikonStatus[row2.status]"/>
                         </div>
                     </v-card-text>
@@ -179,7 +179,7 @@ export default {
 
         return {
             id: route.params.id,
-            latihan_id: route.query.id_latihan,
+            path_latihan_id: route.query.path_latihan_id,
         }
     },
     data: function(){
@@ -238,11 +238,11 @@ export default {
             if(this.filterStatus.toString()){
                 query.push(`status:${this.filterStatus}`)
             }
-            if(query.length>0){s
+            if(query.length>0){
                 query           = `&query=${query.join(',')}`
             }
 
-            const data          = (await this.$api.$get(`path/${this.id}/latihan/${this.latihan_id}/peserta?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
+            const data          = (await this.$api.$get(`path/${this.id}/latihan/${this.path_latihan_id}/peserta?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
 
             this.table.data     = data.content
             this.table.count    = eval(data.count)
@@ -251,7 +251,7 @@ export default {
         handelDetail: async function( item ){
             this.data   = []
             this.popup  = true
-            this.data   = (await this.$api.$get(`path/${this.id}/latihan/${this.latihan_id}/peserta/${item.id}`)).data
+            this.data   = (await this.$api.$get(`path/${this.id}/latihan/${this.path_latihan_id}/peserta/${item.id}`)).data
         },
 
     }

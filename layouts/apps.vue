@@ -128,13 +128,16 @@
 				:setConfirmation="setConfirmation"
                 :handelKeluar="handelKeluar"
                 :setFetching="setFetching"
-				:setSnackbar="setSnackbar"/>
+				:setSnackbar="setSnackbar"
+				:aesEncrypt="aesEncrypt"
+				:aesDecrypt="aesDecrypt"/>
 
 		</v-main>
 	</v-app>
 </template>
 
 <script>
+import crypto from 'crypto'
 export default {
 	data () {
 		let user = this.$auth.user
@@ -251,6 +254,20 @@ export default {
 		}
 	},
 	methods:{
+		aesEncrypt: (plainText)=>{
+            const encrptKey = "u1ng@u1ngjklmnop";
+            plainText       = Buffer.from(plainText);
+            let cipher      = crypto.createCipheriv("AES-128-ECB", encrptKey, "");
+            let encrypted   = cipher.update(plainText, "", "");
+            return Buffer.concat([encrypted, cipher.final()]).toString("base64");
+        },
+		aesDecrypt: (encryptText)=>{
+			const encrptKey = "u1ng@u1ngjklmnop";
+            encryptText     = Buffer.from(encryptText, "base64");
+            let cipher      = crypto.createDecipheriv("AES-128-ECB", encrptKey, "");
+            let decrypted   = cipher.update(encryptText);
+            return Buffer.concat([decrypted, cipher.final()]).toString("utf-8");
+        },
 		handelKeluar: async function(){
             await this.$auth.logout()
         },

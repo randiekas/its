@@ -4,13 +4,13 @@
 			<v-container>
 				<Head
 					title="Mulai"
-					:subtitle="detail.nama">
+					:subtitle="detail.latihan.nama">
                     <div>
                         <v-btn
                             exact
                             small
                             class="white"
-                            to="/apps/latihan">
+                            :to="`/apps/its/${id}`">
                             <v-icon left>
                                 mdi-chevron-left
                             </v-icon>
@@ -25,13 +25,13 @@
 		</div>
 		<v-container class="mt-n16">
             <v-row
-                v-if="detail.id!=undefined && soal.id!=undefined">
+                v-if="detail.latihan.id!=undefined && soal.id!=undefined">
                 <v-col md="8">
                     <v-card outlined>
                         <v-card-title>
                             Soal
                             <v-spacer/>
-                            {{ke+1}}/{{ detail.soal.length }}
+                            {{ke+1}}/{{ detail.latihan.soal.length }}
                         </v-card-title>
                         <v-divider/>
                         <v-card-text>
@@ -60,7 +60,7 @@
                                 :disabled="soal.maksimal_percobaan==0"
                                 class="primary">Check Jawaban ({{ soal.maksimal_percobaan }})</v-btn>
                             <v-btn
-                                v-if="(ke+1)==detail.soal.length"
+                                v-if="(ke+1)==detail.latihan.soal.length"
                                 :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.maksimal_percobaan>0"
                                 @click="handelSelesai"
                                 class="primary">Selesai</v-btn>
@@ -127,14 +127,14 @@ export default {
     asyncData: async function({ route }){
         return {
             id: route.params.id,
-            latihan_id:route.query.id_latihan,
+            path_latihan_id:route.query.path_latihan_id,
         }
     },
     data: function(){
         return {
             isFetching:true,
             detail: {
-                nama: '-'
+                latihan:{nama: '-'}
             },
             soal: {},
             tab:0,
@@ -154,17 +154,17 @@ export default {
         handelLoadData: async function(){
 
             this.isFetching	= true
-			let detail      = (await this.$api.$get(`/path/saya/${this.id}/latihan/${this.latihan_id}`)).data
-            detail.soal     = detail.soal.map((item)=>{
+			let detail      = (await this.$api.$get(`/path/saya/${this.id}/latihan/${this.path_latihan_id}`)).data
+            detail.latihan.soal     = detail.latihan.soal.map((item)=>{
                                     item.opsi               = JSON.parse(item.opsi)
                                     item.percobaan          = []
                                     item.jumlah_percobaan   = 0
                                     item.status             = 0
                                     return item
                                 })
-            // detail.opsi     = JSON.parse(detail.opsi)
-            if(detail.soal.length>0){
-                this.soal   = detail.soal[this.ke]
+            // detail.latihan.opsi     = JSON.parse(detail.latihan.opsi)
+            if(detail.latihan.soal.length>0){
+                this.soal   = detail.latihan.soal[this.ke]
             }
             this.detail     = detail
 			this.isFetching	= false
@@ -174,25 +174,26 @@ export default {
         checkJawaban: function(){
             this.soal.maksimal_percobaan    -= 1
             this.soal.opsi                  = this.soal.opsi.map((item)=>{
+                item                        = Object.assign({}, item)
                 item.status                 = item.jawaban == item.jawabanSiswa ? 1 : 0
                 return item
             })
 
             this.soal.status                = this.soal.opsi.filter((item)=>item.status==1).length==this.soal.opsi.length?1:0
             this.soal.jumlah_percobaan      += 1
-            this.soal.percobaan.push(this.soal.opsi)
+            this.soal.percobaan.push(Object.assign({}, this.soal.opsi))
         },
 
         handelSoalSelanjutnya: function(){
             this.hint           = false
             this.ke             = this.ke+1
-            this.soal           = this.detail.soal[this.ke]
+            this.soal           = this.detail.latihan.soal[this.ke]
         },
 
         handelSelesai: async function(){
             this.setFetching(true)
             const payload   = {
-                detail: this.detail.soal.map((item)=>{
+                detail: this.detail.latihan.soal.map((item)=>{
                     return {
                         latihan_detail_id: item.id,
                         jumlah_percobaan:item.jumlah_percobaan,
@@ -202,7 +203,7 @@ export default {
                 })
             }
 
-            this.$api.$post(`path/saya/${this.id}/latihan/${this.latihan_id}`, payload).then((resp)=>{
+            this.$api.$post(`path/saya/${this.id}/latihan/${this.path_latihan_id}`, payload).then((resp)=>{
                 this.setFetching(false)
                 this.setConfirmation({
                     status: true,

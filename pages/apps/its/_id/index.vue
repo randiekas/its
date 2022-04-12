@@ -99,7 +99,7 @@ export default {
     layout:'apps',
 	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access' ],
     asyncData: async function({ route }){
-
+        // const id    = this.aesDecrypt(route.params.id)
         return {
             id: route.params.id
         }
@@ -149,7 +149,7 @@ export default {
                     return
                 }
             }
-            this.$router.push(`/apps/its/${this.id}/detail?id_latihan=${item.id}`)
+            this.$router.push(`/apps/its/${this.id}/detail?path_latihan_id=${item.path_latihan_id}`)
         }
     }
 }

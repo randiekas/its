@@ -9,7 +9,7 @@
                         exact
                         small
                         class="white"
-                        to="/apps/latihan/create">
+                        @click="popup = true">
                         <v-icon left>
                             mdi-account-plus
                         </v-icon>
@@ -74,6 +74,7 @@
                     :items="table.data"
                     item-key="id"
                     disable-sort
+                    @click:row="handelClickDetail"
                     :loading="isFetching"
                     :options.sync="options"
                     :server-items-length="table.count"
@@ -92,11 +93,6 @@
                             :to="`/apps/latihan/${item.id}/kelola`"
                             x-small>
                             Kelola
-                        </v-btn>
-                        <v-btn 
-                            :to="`/apps/latihan/${item.id}/peserta`"
-                            x-small>
-                            Peserta
                         </v-btn>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
@@ -126,14 +122,14 @@
 								<v-text-field
                                     v-model="form.nama"
 									dense
-									label="Nama Path"
+									label="Nama Latihan"
 									outlined
 									required/>
                                 <v-text-field
-                                    v-model="form.minimun_benar"
+                                    v-model.number="form.minimun_benar"
                                     type="number"
 									dense
-									label="Nama Path"
+									label="Minimum jumlah benar"
 									outlined
 									required/>
 							</v-col>
@@ -183,17 +179,17 @@ export default {
                         value: 'no',
                     },
                     { text: 'Nama', value: 'nama' },
+                    { text: 'Minimum Benar', value: 'minimun_benar' },
                     { text: 'Jumlah Soal', value: 'jumlah_soal' },
                     { text: 'Jumlah Peserta', value: 'jumlah_peserta' },
                     { text: 'Created', value: 'created_at' },
                     { text: 'Updated', value: 'updated_at' },
                     { text: 'Status', value: 'status' },
-                    { text: '', value: 'aksi' },
                 ],
                 data:[],
-                popup: false,
-                form: {},
             },
+            popup: false,
+            form: {},
         }
     },
     mounted: function(){
@@ -206,7 +202,7 @@ export default {
 
             let query       = []
             if(this.filterNama){
-                query.push(`nama:ilike.${this.filterName}`)
+                query.push(`nama:ilike.${this.filterNama}`)
             }
             if(this.dibuat){
                 query.push(`dibuat:date.${this.filterCreatedAt}`)
@@ -234,12 +230,12 @@ export default {
         },
         handelSimpanForm: function(){
             this.setFetching(true)
-            this.$api.$post(`path`, this.form).then((resp)=>{
+            this.$api.$post(`latihan`, this.form).then((resp)=>{
                 this.handelResetForm()
                 this.popup = false
                 this.setFetching(false)
                 this.setSnackbar("Latihan berhasil ditambahkan, silahkan import latihan soal")
-                this.$router.push(`/apps/latihan-path/${resp.data}`);
+                this.$router.push(`/apps/latihan/${resp.data}`);
             })
             // this.dialog = false
         },

@@ -20,13 +20,17 @@
 				<v-card-text>
 					<v-row>
 						<v-text-field
+							v-model="kodeITS"
+							v-on:keyup.enter="handelCekKodeITS"
 							class="mt-0"
 							hide-details=""
 							solo
 							persistent-placeholder
 							placeholder="Kode ITS"
 							dense/>
-						<v-btn class="primary">
+						<v-btn 
+							@click="handelCekKodeITS"
+							class="primary">
 							Gabung
 						</v-btn>
 					</v-row>
@@ -71,7 +75,7 @@
 			</v-row>
 			<v-row v-else class="mb-8">
 				<v-col
-					v-if="data.length>=0">
+					v-if="data.length==0">
 					<v-alert type="info">Anda belum memiliki ITS</v-alert>
 				</v-col>
 				<template
@@ -82,7 +86,7 @@
 						md="3">
 						<v-card
 							hover
-							:to="`/apps/its/${item.id}`">
+							@click="handelKlikDetailITS(item.id)">
 							<v-card-title>{{ item.path.nama }}</v-card-title>
 							<v-card-subtitle>{{ item.path.jumlah_peserta}} Peserta</v-card-subtitle>
 							<v-card-subtitle>{{ item.path.jumlah_latihan}} Latihan Soal</v-card-subtitle>
@@ -124,11 +128,12 @@
 <script>
 export default {
 	layout:'apps',
-	props: ['apps', 'tipe', 'handelKeluar'],
+	props: ['apps', 'tipe', 'handelKeluar', 'aesEncrypt', 'aesDecrypt', 'setFetching', 'setSnackbar'],
 	data: function(){
 		return {
 			isFetching:true,
-			data: []
+			data: [],
+			kodeITS: ''
 		}
 	},
 	mounted: function(){
@@ -140,6 +145,22 @@ export default {
 			this.data		= (await this.$api.$get(`/path/saya?page=0&size=4`)).data.content
 			this.isFetching	= false
 		},
+		handelCekKodeITS: function(){
+			this.setFetching(true)
+			const payload	= {
+				path_id: eval(this.aesDecrypt(this.kodeITS))
+			}
+			this.$api.$post(`path/saya`, payload).then((resp)=>{
+                this.popup = false
+                this.setFetching(false)
+                this.setSnackbar("Latihan path berhasil ditambahkan, silahkan import latihan soal")
+                this.$router.push(`/apps/its/${payload.path_id}`)
+            })
+			
+		},
+		handelKlikDetailITS: function(id){
+			this.$router.push(`/apps/its/${id}`)
+		}
 	}
 }
 </script>

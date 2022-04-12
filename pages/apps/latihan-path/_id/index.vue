@@ -6,6 +6,15 @@
 					title="Kelola"
 					:subtitle="`Buat Latihan ${detail.nama}`">
                     <div>
+                        <v-btn 
+                            @click="handelSalin"
+                            small 
+                            class="white">
+                            <v-icon left>
+                                mdi-content-copy
+                            </v-icon>
+                            Salin Kode ITS
+                        </v-btn>
                         <v-btn
                             @click="popup = true"
                             exact
@@ -91,7 +100,7 @@
                             <v-btn 
                                 class="ml-2"
                                 outlined
-                                :to="`/apps/latihan-path/${id}/peserta?id_latihan=${item.id}`">
+                                :to="`/apps/latihan-path/${id}/peserta?path_latihan_id=${item.path_latihan_id}`">
                                 <v-icon left>
                                     mdi-account-group-outline
                                 </v-icon>
@@ -118,7 +127,7 @@
                                 label="Jumlah Peserta"
                                 persistent-placeholder
                                 hide-details=""
-                                v-model="item.jumlah_peserta"
+                                v-model="detail.jumlah_peserta"
                                 type="number"/>
                         </v-card-subtitle>
                     </v-card>
@@ -194,7 +203,7 @@
 <script>
 export default {
     layout:'apps',
-	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access' ],
+	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access', 'aesEncrypt' ],
     asyncData: async function({ route }){
 
         return {
@@ -262,12 +271,16 @@ export default {
                     }).then((resp)=>{
                         this.popup  = false
                         this.handelLoadData()
-                        this.setSnackbar("latihan berhasil ditambahkan")
+                        this.setSnackbar("latihan berhasil dihapus")
                         this.setFetching(false)
                     })
                 }
             })
         },
+        handelSalin: function(){
+            navigator.clipboard.writeText(this.aesEncrypt(this.id));
+            this.setSnackbar("Kode ITS Berhasil disalin")
+        }
 
     }
 }
