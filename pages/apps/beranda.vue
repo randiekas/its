@@ -151,10 +151,9 @@ export default {
 				path_id: eval(this.aesDecrypt(this.kodeITS))
 			}
 			this.$api.$post(`path/saya`, payload).then((resp)=>{
-                this.popup = false
                 this.setFetching(false)
                 this.setSnackbar("Latihan path berhasil ditambahkan, silahkan import latihan soal")
-                this.$router.push(`/apps/its/${payload.path_id}`)
+                // this.$router.push(`/apps/its/${payload.path_id}`)
             })
 			
 		},
