@@ -9,7 +9,7 @@
                         exact
                         small
                         class="white"
-                        @click="popup = true">
+                        @click="handelCreate()">
                         <v-icon left>
                             mdi-account-plus
                         </v-icon>
@@ -74,7 +74,6 @@
                     :items="table.data"
                     item-key="id"
                     disable-sort
-                    @click:row="handelClickDetail"
                     :loading="isFetching"
                     :options.sync="options"
                     :server-items-length="table.count"
@@ -90,9 +89,16 @@
                     </template>
                     <template v-slot:[`item.aksi`]="{ item }">
                         <v-btn 
-                            :to="`/apps/latihan/${item.id}/kelola`"
-                            x-small>
-                            Kelola
+                            @click="handelEdit(item)"
+                            icon
+                            small>
+                            <v-icon>mdi-pencil-circle</v-icon>
+                        </v-btn>
+                        <v-btn 
+                            @click="handelClickDetail(item)"
+                            icon
+                            small>
+                            <v-icon>mdi-information</v-icon>
                         </v-btn>
                     </template>
                     <template v-slot:[`item.status`]="{ item }">
@@ -185,6 +191,7 @@ export default {
                     { text: 'Created', value: 'created_at' },
                     { text: 'Updated', value: 'updated_at' },
                     { text: 'Status', value: 'status' },
+                    { text: '', value: 'aksi' },
                 ],
                 data:[],
             },
@@ -230,15 +237,35 @@ export default {
         },
         handelSimpanForm: function(){
             this.setFetching(true)
-            this.$api.$post(`latihan`, this.form).then((resp)=>{
-                this.handelResetForm()
-                this.popup = false
-                this.setFetching(false)
-                this.setSnackbar("Latihan berhasil ditambahkan, silahkan import latihan soal")
-                this.$router.push(`/apps/latihan/${resp.data}`);
-            })
+
+            if(this.form.id==undefined){
+                this.$api.$post(`latihan`, this.form).then((resp)=>{
+                    this.handelResetForm()
+                    this.popup = false
+                    this.setFetching(false)
+                    this.setSnackbar("Latihan berhasil ditambahkan, silahkan import latihan soal")
+                    this.$router.push(`/apps/latihan/${resp.data}`);
+                })
+            }else{
+                this.$api.$put(`latihan/${this.form.id}`, this.form).then((resp)=>{
+                    this.handelResetForm()
+                    this.popup = false
+                    this.setFetching(false)
+                    this.setSnackbar("Latihan berhasil diubah")
+                    this.handelLoadData()
+                })
+            }
             // this.dialog = false
         },
+        handelEdit: function(item){
+            this.handelResetForm()
+            this.form   = Object.assign({}, item)
+            this.popup  = true
+        },
+        handelCreate: function(item){
+            this.handelResetForm()
+            this.popup  = true
+        }
 
     }
 }

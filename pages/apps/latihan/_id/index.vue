@@ -82,12 +82,19 @@
                                         persistent-placeholder
                                         hide-details=""/>
                                 </v-col>
-                                <v-col md="6">
+                                <v-col md="5">
                                     <v-text-field 
                                         v-model="item.feedback"
                                         label="Feedback"
                                         persistent-placeholder
                                         hide-details=""/>
+                                </v-col>
+                                <v-col md="1" class="d-flex" style="justify-content:'center'; align-items:center">
+                                    <v-btn 
+                                        @click="form.opsi.splice(index, 1)"
+                                        icon>
+                                        <v-icon>mdi-delete-circle</v-icon>
+                                    </v-btn>
                                 </v-col>
                             </v-row>
                             <div class="text-right mt-4">
@@ -154,9 +161,6 @@ export default {
                                 })
             this.detail     = detail
 			this.isFetching	= false
-        },
-        handelClickDetail: function( item ){
-            
         },
         handelTambahSoal: function(){
             this.dipilih    = false
