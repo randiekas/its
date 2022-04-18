@@ -153,6 +153,7 @@ export default {
 			this.$api.$post(`path/saya`, payload).then((resp)=>{
                 this.setFetching(false)
                 this.setSnackbar("Latihan path berhasil ditambahkan, silahkan import latihan soal")
+				this.handelLoadData()
                 // this.$router.push(`/apps/its/${payload.path_id}`)
             })
 			
