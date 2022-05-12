@@ -50,25 +50,32 @@
                                     :prefix="`${item.label} = `"
                                     :success="item.status==1"
                                     :error="item.status==0"
-                                    :append-icon="ikonStatus[item.status]"/>
+                                    :append-icon="ikonStatus[item.status]">
+                                    <template v-slot:append-outer>
+                                        <v-btn
+                                            @click="checkJawaban"
+                                            :disabled="sub!=index"
+                                            class="primary">Check ({{ item.percobaan }})</v-btn>
+                                    </template>
+                                </v-text-field>
                             </div>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer/>
                             <v-btn
-                                @click="checkJawaban"
-                                :disabled="soal.maksimal_percobaan==0"
-                                class="primary">Check Jawaban ({{ soal.maksimal_percobaan }})</v-btn>
-                            <v-btn
                                 v-if="(ke+1)==detail.latihan.soal.length"
                                 :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.maksimal_percobaan>0"
                                 @click="handelSelesai"
                                 class="primary">Selesai</v-btn>
-                            <v-btn
-                                v-else
-                                :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.maksimal_percobaan>0"
-                                @click="handelSoalSelanjutnya"
-                                class="primary">Soal Selanjutnya</v-btn>
+                            <template
+                                v-else>
+                                <v-btn
+                                    class="primary">Ulangi</v-btn>
+                                <v-btn
+                                    :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.maksimal_percobaan>0"
+                                    @click="handelSoalSelanjutnya"
+                                    class="primary">Soal Selanjutnya</v-btn>
+                            </template>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -137,6 +144,7 @@ export default {
                 latihan:{nama: '-'}
             },
             soal: {},
+            sub: 0,
             tab:0,
             ke:0,
             hint: false,
@@ -156,7 +164,12 @@ export default {
             this.isFetching	= true
 			let detail      = (await this.$api.$get(`/path/saya/${this.id}/latihan/${this.path_latihan_id}`)).data
             detail.latihan.soal     = detail.latihan.soal.map((item)=>{
-                                    item.opsi               = JSON.parse(item.opsi)
+                                    item.opsi               = JSON.parse(item.opsi).map((row)=>{
+                                        return {
+                                            ...row,
+                                            percobaan: item.maksimal_percobaan
+                                        }
+                                    })
                                     item.percobaan          = []
                                     item.jumlah_percobaan   = 0
                                     item.status             = 0
@@ -165,6 +178,7 @@ export default {
             // detail.latihan.opsi     = JSON.parse(detail.latihan.opsi)
             if(detail.latihan.soal.length>0){
                 this.soal   = detail.latihan.soal[this.ke]
+                this.sub            = 0
             }
             this.detail     = detail
 			this.isFetching	= false
@@ -172,22 +186,33 @@ export default {
         },
 
         checkJawaban: function(){
-            this.soal.maksimal_percobaan    -= 1
-            this.soal.opsi                  = this.soal.opsi.map((item)=>{
-                item                        = Object.assign({}, item)
-                item.status                 = item.jawaban == item.jawabanSiswa ? 1 : 0
-                return item
-            })
+            
+            this.soal.opsi[this.sub].percobaan  -= 1
+            this.soal.opsi[this.sub].status     = this.soal.opsi[this.sub].jawaban == this.soal.opsi[this.sub].jawabanSiswa ? 1 : 0
+            // console.log(this.soal.opsi[this.sub])
+            
+            // this.soal.opsi                  = this.soal.opsi.map((item)=>{
+            //     item                        = Object.assign({}, item)
+            //     item.status                 = item.jawaban == item.jawabanSiswa ? 1 : 0
+            //     return item
+            // })
 
-            this.soal.status                = this.soal.opsi.filter((item)=>item.status==1).length==this.soal.opsi.length?1:0
-            this.soal.jumlah_percobaan      += 1
-            this.soal.percobaan.push(Object.assign({}, this.soal.opsi))
+            if(this.soal.opsi[this.sub].percobaan==0 || this.soal.opsi[this.sub].status){
+                this.sub                    += 1
+            }
+
+            this.soal.opsi                  = Object.assign([], this.soal.opsi)
+            // this.soal.status                = this.soal.opsi.filter((item)=>item.status==1).length==this.soal.opsi.length?1:0
+            // this.soal.jumlah_percobaan      += 1
+            // this.soal.percobaan.push(Object.assign({}, this.soal.opsi))
         },
 
         handelSoalSelanjutnya: function(){
             this.hint           = false
             this.ke             = this.ke+1
             this.soal           = this.detail.latihan.soal[this.ke]
+            this.sub            = 0
+            // this.sub_percobaan  = this.soal.maksimal_percobaan
         },
 
         handelSelesai: async function(){

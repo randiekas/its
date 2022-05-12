@@ -109,9 +109,9 @@ export default {
 	// PWA module configuration: https://go.nuxtjs.dev/pwa
 	pwa: {
 		manifest: {
-			name: 'sikadduduk',
-			short_name: 'sikadduduk',
-			description: 'Sistem Informasi Kependudukan',
+			name: 'ITS',
+			short_name: 'ITS',
+			description: 'Intellegence Tutoring System',
 			lang: 'en',
 		}
 	},

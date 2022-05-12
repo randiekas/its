@@ -48,27 +48,53 @@
                     </v-card>
                 </v-col>
                 <v-col md="9">
-                    <v-card outlined>
+
+                    <v-card outlined class="mb-4">
                         <v-card-text>
                             <v-text-field
                                 v-model="form.maksimal_percobaan"
                                 persistent-placeholder
                                 type="number"
-                                label="Maksimal Percobaan Menjawab"/>
-                            <v-textarea
-                                persistent-placeholder
-                                v-model="form.soal"
-                                label="Soal"/>
-                            <v-textarea
-                                persistent-placeholder
-                                v-model="form.hint"
-                                label="Hint"/>
-                            <p>Opsi Jawaban</p>
-                            <v-divider class="mb-4"/>
+                                label="Maksimal Percobaan Menjawab"
+                                hide-details=""/>
+                        </v-card-text>
+                    </v-card>
+
+                    <v-card outlined class="mb-4">
+                        <v-card-title>Soal</v-card-title>
+                        <my-editor v-model="form.soal"/>
+                    </v-card>
+
+                    <v-card outlined class="mb-4">
+                        <v-card-title>Hint</v-card-title>
+                        <my-editor v-model="form.hint"/>
+                    </v-card>
+                    <v-card>
+                        <v-card-title>
+                            Opsi Jawaban
+                            <v-spacer/>
+                            <!-- <v-btn 
+                                class="mr-2"
+                                @click="handelTambahOpsi"
+                                small
+                                rounded 
+                                outlined>
+                                Mode Expert
+                            </v-btn> -->
+                            <v-btn 
+                                @click="handelTambahOpsi"
+                                small
+                                rounded 
+                                outlined>
+                                Tambah Opsi
+                            </v-btn>
+                        </v-card-title>
+                        <v-divider/>
+                        <v-card-text>
                             <v-row 
                                 v-for="(item, index) in form.opsi"
                                 :key="index">
-                                <v-col md="3">
+                                <v-col md="2">
                                     <v-text-field 
                                         v-model="item.label"
                                         label="Label"
@@ -82,52 +108,53 @@
                                         persistent-placeholder
                                         hide-details=""/>
                                 </v-col>
-                                <v-col md="5">
+                                <v-col md="3">
                                     <v-text-field 
                                         v-model="item.feedback"
                                         label="Feedback"
                                         persistent-placeholder
                                         hide-details=""/>
                                 </v-col>
+                                <v-col md="3">
+                                    <v-text-field 
+                                        v-model="item.hint"
+                                        label="Hint"
+                                        persistent-placeholder
+                                        hide-details=""/>
+                                </v-col>
                                 <v-col md="1" class="d-flex" style="justify-content:'center'; align-items:center">
                                     <v-btn 
                                         @click="form.opsi.splice(index, 1)"
-                                        icon>
+                                        icon
+                                        large>
                                         <v-icon>mdi-delete-circle</v-icon>
                                     </v-btn>
                                 </v-col>
                             </v-row>
-                            <div class="text-right mt-4">
-                                <v-btn 
-                                    @click="handelTambahOpsi"
-                                    small
-                                    rounded 
-                                    outlined>
-                                    Tambah Opsi
-                                </v-btn>
-                            </div>
-                            <div class="text-right mt-4">
-                                <v-btn 
-                                    v-if="form.id!=undefined"
-                                    @click="handelHapus"
-                                    rounded>
-                                    Hapus
-                                </v-btn>
-                                <v-btn 
-                                    @click="handelSimpanForm"
-                                    class="primary" 
-                                    rounded>
-                                    Simpan
-                                </v-btn>
-                            </div>
                         </v-card-text>
                     </v-card>
+                    <div class="text-right mt-4">
+                        <v-btn 
+                            v-if="form.id!=undefined"
+                            @click="handelHapus"
+                            rounded>
+                            Hapus
+                        </v-btn>
+                        <v-btn 
+                            @click="handelSimpanForm"
+                            class="primary" 
+                            rounded
+                            :disabled="form.opsi.length==0">
+                            Simpan
+                        </v-btn>
+                    </div>
                 </v-col>
             </v-row>
 		</v-container>
 	</div>
 </template>
 <script>
+
 export default {
     layout:'apps',
 	props: [ 'setConfirmation', 'setSnackbar', 'setFetching' ],
@@ -142,7 +169,7 @@ export default {
             tab: 0,
             detail: { nama:'-', soal: [] },
             dipilih: false,
-            form: {}
+            form: {opsi:[]},
         }
     },
     mounted: function(){
@@ -227,3 +254,8 @@ export default {
     }
 }
 </script>
+<style>
+/* .ck-editor__editable_inline {
+    min-height: 150px;
+} */
+</style>

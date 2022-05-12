@@ -284,4 +284,38 @@ export default {
 .border--white{
 	border: 1px solid white!important
 }
+pre {
+    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+    clear: both;
+    color: #fff;
+    background: #1b1b1b;
+    padding: 0;
+    -moz-tab-size: 2;
+    -o-tab-size: 2;
+    tab-size: 2;
+    -ms-word-break: normal;
+    word-break: normal;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+    position: relative;
+    line-height: 28px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+pre code {
+	color: #f5d67b;
+	scrollbar-color: #666 #201c29;
+	background: none;
+	white-space: pre;
+	-webkit-overflow-scrolling: touch;
+	overflow-x: scroll;
+	display: block;
+	max-width: 100%;
+	min-width: 100px;
+	font-size: 16px;
+	padding: 15px 20px 12px 22px;
+	line-height: 1.75;
+	font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+}
 </style>
