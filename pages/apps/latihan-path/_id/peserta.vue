@@ -22,23 +22,24 @@
                         <div
                             class="mb-4"
                             v-html="item.soal"/>
-                        Jumlah Percobaan: {{ item.jawaban.jumlah_percobaan }}
-                        <div
-                            v-for="(row, key) in JSON.parse(item.jawaban.percobaan)"
-                            :key="key">
-                            <v-subheader>Percobaan {{key+1}}</v-subheader>
-                            <v-text-field
-                                v-for="(row2, key2) in row"
-                                :key="key2"
-                                persistent-placeholder
-                                outlined
-                                dense
-                                v-model="row2.jawabanSiswa"
-                                :prefix="`${row2.label} = `"
-                                :success="row2.status===1"
-                                :error="row2.status===0"
-                                :append-icon="ikonStatus[row2.status]"/>
-                        </div>
+                            <div
+                                v-for="(row, key) in item.opsi"
+                                :key="key">
+                                <v-text-field
+                                    persistent-placeholder
+                                    outlined
+                                    dense
+                                    readonly
+                                    :value="row.jawaban"
+                                    :success="row.status===1"
+                                    :error="row.status===0"
+                                    :append-icon="ikonStatus[row.status]"
+                                    :prefix="row.label">
+                                    <template v-slot:append-outer>
+                                        {{ row.percobaan }}x
+                                    </template>
+                                </v-text-field>
+                            </div>
                     </v-card-text>
                 </v-card>
                 </v-card-text>
@@ -242,7 +243,7 @@ export default {
                 query           = `&query=${query.join(',')}`
             }
 
-            const data          = (await this.$api.$get(`path/${this.id}/latihan/${this.path_latihan_id}/peserta?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
+            let data            = (await this.$api.$get(`path/${this.id}/latihan/${this.path_latihan_id}/peserta?page=${this.options.page-1}&size=${this.options.itemsPerPage}${query}`)).data
 
             this.table.data     = data.content
             this.table.count    = eval(data.count)
@@ -251,7 +252,17 @@ export default {
         handelDetail: async function( item ){
             this.data   = []
             this.popup  = true
-            this.data   = (await this.$api.$get(`path/${this.id}/latihan/${this.path_latihan_id}/peserta/${item.id}`)).data
+            this.data   = (await this.$api.$get(`path/${this.id}/latihan/${this.path_latihan_id}/peserta/${item.id}`)).data.map((item)=>{
+                item.jawaban.percobaan  = JSON.parse(item.jawaban.percobaan)
+                item.opsi               = JSON.parse(item.opsi).map((row, index)=>{
+                    const jawaban       = item.jawaban.percobaan[index]
+                    row.jawaban         = jawaban[jawaban.length-1].jawaban
+                    row.status          = jawaban[jawaban.length-1].status
+                    row.percobaan       = item.jawaban.percobaan[index].length
+                    return row
+                })
+                return item
+            })
         },
 
     }

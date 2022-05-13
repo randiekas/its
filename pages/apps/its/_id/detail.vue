@@ -47,14 +47,15 @@
                                     outlined
                                     dense
                                     v-model="item.jawabanSiswa"
-                                    :prefix="`${item.label} = `"
+                                    :readonly="sub!=index"
+                                    :prefix="`${item.label}`"
                                     :success="item.status==1"
                                     :error="item.status==0"
                                     :append-icon="ikonStatus[item.status]">
                                     <template v-slot:append-outer>
                                         <v-btn
                                             @click="checkJawaban"
-                                            :disabled="sub!=index"
+                                            :disabled="sub!=index || item.percobaan === 0 || item.status === 1"
                                             class="primary">Check ({{ item.percobaan }})</v-btn>
                                     </template>
                                 </v-text-field>
@@ -64,15 +65,15 @@
                             <v-spacer/>
                             <v-btn
                                 v-if="(ke+1)==detail.latihan.soal.length"
-                                :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.maksimal_percobaan>0"
+                                :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0"
                                 @click="handelSelesai"
                                 class="primary">Selesai</v-btn>
                             <template
                                 v-else>
+                                <!-- <v-btn
+                                    class="primary">Ulangi</v-btn> -->
                                 <v-btn
-                                    class="primary">Ulangi</v-btn>
-                                <v-btn
-                                    :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.maksimal_percobaan>0"
+                                    :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0"
                                     @click="handelSoalSelanjutnya"
                                     class="primary">Soal Selanjutnya</v-btn>
                             </template>
@@ -85,9 +86,11 @@
                         <v-divider/>
                         <v-card-text>
                             <p
-                                v-for="(item, index) in soal.opsi.filter((item)=>item.status==0)"
-                                :key="index"
-                                v-html="item.feedback"></p>
+                                v-if="soal.opsi[sub].status==0"
+                                v-html="soal.opsi[sub].feedback"></p>
+                            <p
+                                v-else
+                                v-html="'Silahkan jawab soal untuk mendapatkan feedback'"></p>
                         </v-card-text>
                         <v-divider/>
                         <v-tabs
@@ -100,17 +103,12 @@
                         <v-card-text>
                             <v-tabs-items v-model="tab">
                                 <v-tab-item>
-                                    <v-btn
-                                        v-if="hint===false"
-                                        @click="hint=true"
-                                        block>Lihat Hints</v-btn>
                                     <div
-                                        v-if="hint"
-                                        v-html="soal.hint">
+                                        v-html="soal.opsi[sub].hint">
                                     </div>
                                 </v-tab-item>
                                 <v-tab-item>
-                                    Belum Tersedia
+                                    
                                 </v-tab-item>
                             </v-tabs-items>
                         </v-card-text>
@@ -164,21 +162,22 @@ export default {
             this.isFetching	= true
 			let detail      = (await this.$api.$get(`/path/saya/${this.id}/latihan/${this.path_latihan_id}`)).data
             detail.latihan.soal     = detail.latihan.soal.map((item)=>{
-                                    item.opsi               = JSON.parse(item.opsi).map((row)=>{
-                                        return {
-                                            ...row,
-                                            percobaan: item.maksimal_percobaan
-                                        }
-                                    })
-                                    item.percobaan          = []
-                                    item.jumlah_percobaan   = 0
-                                    item.status             = 0
-                                    return item
-                                })
+                item.opsi           = JSON.parse(item.opsi).map((row)=>{
+                    return {
+                        ...row,
+                        percobaan: item.maksimal_percobaan,
+                        riwayat: [],
+                    }
+                })
+                item.percobaan          = []
+                item.jumlah_percobaan   = 0
+                item.status             = 0
+                return item
+            })
             // detail.latihan.opsi     = JSON.parse(detail.latihan.opsi)
             if(detail.latihan.soal.length>0){
                 this.soal   = detail.latihan.soal[this.ke]
-                this.sub            = 0
+                this.sub    = 0
             }
             this.detail     = detail
 			this.isFetching	= false
@@ -187,41 +186,37 @@ export default {
 
         checkJawaban: function(){
             
-            this.soal.opsi[this.sub].percobaan  -= 1
-            this.soal.opsi[this.sub].status     = this.soal.opsi[this.sub].jawaban == this.soal.opsi[this.sub].jawabanSiswa ? 1 : 0
-            // console.log(this.soal.opsi[this.sub])
-            
-            // this.soal.opsi                  = this.soal.opsi.map((item)=>{
-            //     item                        = Object.assign({}, item)
-            //     item.status                 = item.jawaban == item.jawabanSiswa ? 1 : 0
-            //     return item
-            // })
-
-            if(this.soal.opsi[this.sub].percobaan==0 || this.soal.opsi[this.sub].status){
-                this.sub                    += 1
+            let opsi                    = Object.assign({}, this.soal.opsi[this.sub])
+            opsi.percobaan              -= 1
+            opsi.status                 = opsi.jawaban == opsi.jawabanSiswa ? 1 : 0
+            opsi.riwayat.push({
+                jawaban: opsi.jawabanSiswa,
+                status: opsi.status,
+            })
+            this.soal.opsi              = this.soal.opsi.map((item, index)=> this.sub==index?opsi:item)
+            if(this.sub == this.soal.opsi.length-1){
+                // this.handelSoalSelanjutnya()
+            }else if(opsi.percobaan==0 || opsi.status){
+                this.sub                += 1
             }
-
-            this.soal.opsi                  = Object.assign([], this.soal.opsi)
-            // this.soal.status                = this.soal.opsi.filter((item)=>item.status==1).length==this.soal.opsi.length?1:0
-            // this.soal.jumlah_percobaan      += 1
-            // this.soal.percobaan.push(Object.assign({}, this.soal.opsi))
         },
 
         handelSoalSelanjutnya: function(){
-            this.hint           = false
             this.ke             = this.ke+1
             this.soal           = this.detail.latihan.soal[this.ke]
             this.sub            = 0
             // this.sub_percobaan  = this.soal.maksimal_percobaan
         },
 
+
         handelSelesai: async function(){
             this.setFetching(true)
             const payload   = {
                 detail: this.detail.latihan.soal.map((item)=>{
+                    item.percobaan  = item.opsi.map((row)=> row.riwayat)
                     return {
                         latihan_detail_id: item.id,
-                        jumlah_percobaan:item.jumlah_percobaan,
+                        jumlah_percobaan:0,
                         percobaan:JSON.stringify(item.percobaan),
                         status:item.status,
                     }
