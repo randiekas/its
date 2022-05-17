@@ -24,23 +24,24 @@
 			</v-container>
 		</div>
 		<v-container class="mt-n16">
+
             <v-row>
                 <v-col md="3">
                     <v-card outlined>
                         <v-card-title>Nomor Soal</v-card-title>
                         <v-divider/>
                         <v-card-text>
-                            <v-btn 
+                            <v-btn
                                 v-for="(item, index) in detail.soal"
                                 :key="index"
                                 @click="handelSoalDipilih(index, item)"
-                                rounded 
-                                small 
+                                rounded
+                                small
                                 :class="`mb-1 ${index===dipilih?'primary':''}`">{{ index+1 }}</v-btn>
-                            <v-btn 
+                            <v-btn
                                 @click="handelTambahSoal"
-                                block 
-                                rounded 
+                                block
+                                rounded
                                 class="secondary mt-2">
                                 Tambah Soal
                             </v-btn>
@@ -65,84 +66,62 @@
                         <my-editor v-model="form.soal"/>
                     </v-card>
 
-                    <v-card outlined class="mb-4">
-                        <v-card-title>Hint</v-card-title>
-                        <my-editor v-model="form.hint"/>
-                    </v-card>
                     <v-card>
                         <v-card-title>
                             Opsi Jawaban
                             <v-spacer/>
-                            <!-- <v-btn 
+                            <!-- <v-btn
                                 class="mr-2"
                                 @click="handelTambahOpsi"
                                 small
-                                rounded 
+                                rounded
                                 outlined>
                                 Mode Expert
                             </v-btn> -->
-                            <v-btn 
-                                @click="handelTambahOpsi"
+                            <v-btn
+                                v-for="item in opsi"
+                                :key="item"
+                                @click="opsiDipilih=item-1"
+                                :class="`mr-1 ${opsiDipilih===item-1?'primary white--text':''}`"
                                 small
-                                rounded 
+                                rounded
                                 outlined>
-                                Tambah Opsi
+                                {{ item }}
                             </v-btn>
                         </v-card-title>
+                        {{ form.opsi }}
                         <v-divider/>
-                        <v-card-text>
-                            <v-row 
-                                v-for="(item, index) in form.opsi"
-                                :key="index">
-                                <v-col md="2">
-                                    <v-text-field 
-                                        v-model="item.label"
-                                        label="Label"
-                                        persistent-placeholder
-                                        hide-details=""/>
-                                </v-col>
-                                <v-col md="3">
-                                    <v-text-field 
-                                        v-model="item.jawaban"
-                                        label="Jawaban"
-                                        persistent-placeholder
-                                        hide-details=""/>
-                                </v-col>
-                                <v-col md="3">
-                                    <v-text-field 
-                                        v-model="item.feedback"
-                                        label="Feedback"
-                                        persistent-placeholder
-                                        hide-details=""/>
-                                </v-col>
-                                <v-col md="3">
-                                    <v-text-field 
-                                        v-model="item.hint"
-                                        label="Hint"
-                                        persistent-placeholder
-                                        hide-details=""/>
-                                </v-col>
-                                <v-col md="1" class="d-flex" style="justify-content:'center'; align-items:center">
-                                    <v-btn 
-                                        @click="form.opsi.splice(index, 1)"
-                                        icon
-                                        large>
-                                        <v-icon>mdi-delete-circle</v-icon>
-                                    </v-btn>
-                                </v-col>
-                            </v-row>
+                        <v-card-text
+                            v-if="opsiDipilih!==false && form.opsi[opsiDipilih]">
+                            <v-text-field
+                                v-model="form.opsi[opsiDipilih].jawaban"
+                                label="Jawaban"
+                                persistent-placeholder
+                                hide-details=""/>
+
+                            <v-subheader class="pl-0">Feedback</v-subheader>
+                            <my-editor
+                                v-model="form.opsi[opsiDipilih].feedback"/>
+
+                            <v-subheader class="pl-0">Hint</v-subheader>
+                            <my-editor
+                                v-model="form.opsi[opsiDipilih].hint"/>
+                        </v-card-text>
+                        <v-card-text
+                            v-else>
+                            <v-alert type="info">Buat soal dengan opsi jawaban (_____)</v-alert>
                         </v-card-text>
                     </v-card>
                     <div class="text-right mt-4">
-                        <v-btn 
+                        <v-btn
                             v-if="form.id!=undefined"
                             @click="handelHapus"
                             rounded>
                             Hapus
                         </v-btn>
-                        <v-btn 
+                        <v-btn
                             @click="handelSimpanForm"
-                            class="primary" 
+                            class="primary"
                             rounded
                             :disabled="form.opsi.length==0">
                             Simpan
@@ -169,11 +148,51 @@ export default {
             tab: 0,
             detail: { nama:'-', soal: [] },
             dipilih: false,
-            form: {opsi:[]},
+            form: {opsi:[], soal: ''},
+            formOpsiHolder: [],
+            opsiDipilih : false,
+            opsi: []
+        }
+    },
+    watch:{
+        opsiDipilih: function(){
+
+            if(this.form.opsi[this.opsiDipilih]==undefined){
+                this.form.opsi[this.opsiDipilih]    = {
+                    label: '',
+                    jawaban: '',
+                    feedback: '',
+                }
+            }
+        },
+        'form.opsi': function(){
+            this.formOpsiHolder = Object.assign([], this.form.opsi)
+        },
+        'form.soal': function(){
+
+            const soal          = this.form.soal.split("_____").splice(1)
+            let opsi            = []
+            soal.map((item, index)=>{
+                opsi.push(
+                    this.formOpsiHolder[index] || 
+                    {
+                        label: '',
+                        jawaban: '',
+                        feedback: '',
+                    }
+                )
+            })
+
+            this.form.opsi      = opsi
+            this.opsi           = soal.length
+
         }
     },
     mounted: function(){
         this.handelLoadData()
+    },
+    computed:{
+        
     },
     methods: {
         handelLoadData: async function(){
@@ -185,31 +204,24 @@ export default {
                                     ...item,
                                     opsi: JSON.parse(item.opsi)
                                 }
-                                })
+                            })
             this.detail     = detail
 			this.isFetching	= false
         },
         handelTambahSoal: function(){
             this.dipilih    = false
+            this.opsiDipilih= false
             this.handelResetForm()
         },
         handelResetForm: function(){
             this.dipilih    = false
             this.form   = {
+                soal: '',
                 maksimal_percobaan: 0,
                 opsi: [],
                 hint: "",
             }
-            this.handelTambahOpsi()
-        },
-        handelTambahOpsi: function(){
-            this.form.opsi.push(
-                { 
-                    label: '',
-                    jawaban: '',
-                    feedback: '',
-                },
-            )
+            // this.handelTambahOpsi()
         },
         handelSimpanForm: function(){
             this.setFetching(true)
@@ -234,6 +246,7 @@ export default {
         },
         handelSoalDipilih: function(index, item){
             this.dipilih    = index
+            this.opsiDipilih= false
             this.form       = Object.assign({}, item)
         },
         handelHapus: function(){

@@ -69,41 +69,25 @@ This directory contains your Vuex store files. Creating a file in this directory
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
 
 
-format pengisian pendidikan
-- sd
-- smp
-- sma
-- d1
-- d2
-- d3
-- d4/s1
-- s2
-- s3
-format pengisian pendidikan
-- belum bekerja
-- petani
-- nelayan
-- wiraswasta
-- pns
-- honorer
-- karyawan swasta
-- tni/abri
-- polisi
-- lainnya
+Pak Budi mengendarai mobilnya dengan kecepatan 10km/jam, 
 
-format pengisian kawin
-- belum kawin
-- kawin tercatat
-- kawin belum tercatat
-- cerai mati
-- cerai hidup
+berapa jam waktu yang harus ditempuh pak budi untuk pergi kesekolah dengan jarak 50 KM
 
-format pengisian status keluarga
-- kepala keluarga
-- istri
-- anak
-- menantu
-- cucu
-- orang tua
-- mertua
-- lainnya
+Dketahui
+S = _____
+T = _____
+
+V = S/T
+V = _____
+
+var rx = /(_____)/g;
+str = "abcd _____ _____ _____ _____"
+index = 0 
+str = str.replace(rx,function(item){
+    index++
+    if(index===2){
+        return 'ubah'
+    }
+    return item;
+    //return params[$1];
+});

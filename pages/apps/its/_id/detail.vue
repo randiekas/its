@@ -37,7 +37,11 @@
                         <v-card-text>
                             <div
                                 class="mb-4"
-                                v-html="soal.soal"/>
+                                v-html="content"/>
+
+                            <!-- <div
+                                class="mb-4"
+                                v-html="soal.soal"/> -->
 
                             <div
                                 v-for="(item, index) in soal.opsi"
@@ -104,11 +108,13 @@
                             <v-tabs-items v-model="tab">
                                 <v-tab-item>
                                     <div
+                                        v-if="hint"
                                         v-html="soal.opsi[sub].hint">
                                     </div>
-                                </v-tab-item>
-                                <v-tab-item>
-                                    
+                                    <v-btn
+                                        block
+                                        @click="hint=true"
+                                        v-else>Show Hint</v-btn>
                                 </v-tab-item>
                             </v-tabs-items>
                         </v-card-text>
@@ -156,6 +162,34 @@ export default {
     mounted: function(){
         this.handelLoadData()
     },
+      computed: {
+        content() {
+            // keep a map of all your variables
+            let valueMap = {
+                jawaban: `<button type="button" class="primary v-btn--rounded v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small"><span class="v-btn__content">${this.soal.opsi[this.sub].jawabanSiswa||'_____'}</span></button>`,
+            };
+
+            let value   = this.soal.soal;
+            var rx      = /(_____)/g;
+            let index   = 0 
+            value       = value.replace(rx,(item)=>{
+                index++
+                if(index===this.sub+1){
+                    return '{{jawaban}}'
+                }else{
+                    return `<button type="button" class="primary v-btn--rounded v-btn v-btn--is-elevated v-btn--disabled v-btn--has-bg theme--light v-size--small"><span class="v-btn__content">${this.soal.opsi[index-1].jawabanSiswa||'_____'}</span></button>`
+                }
+                return item;
+            })
+
+            let allKeys = Object.keys(valueMap);
+            allKeys.forEach((key) => {
+                var myRegExp = new RegExp('{{' + key + '}}','i');
+                value = value.replace(myRegExp, valueMap[key]);
+            });
+            return value;
+        }
+    },
     methods: {
         handelLoadData: async function(){
 
@@ -197,11 +231,13 @@ export default {
             if(this.sub == this.soal.opsi.length-1){
                 // this.handelSoalSelanjutnya()
             }else if(opsi.percobaan==0 || opsi.status){
+                this.hint               = false
                 this.sub                += 1
             }
         },
 
         handelSoalSelanjutnya: function(){
+            this.hint           = false
             this.ke             = this.ke+1
             this.soal           = this.detail.latihan.soal[this.ke]
             this.sub            = 0

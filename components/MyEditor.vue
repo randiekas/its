@@ -13,7 +13,7 @@ export default {
         return {
             editorConfig: {
                 placeholder: 'Ketik disini ...',
-                removePlugins: ['Title', 'FontSize', 'Heading', 'RemoveFormat', 'FontFamily', 'Highlight', 'PageBreak'],
+                removePlugins: ['Title', 'FontSizeToolbar', 'HeadingToolbar', 'RemoveFormatToolbar', 'FontFamilyToolbar', 'HighlightToolbar', 'PageBreakToolbar', 'MediaEmbedToolbar'],
                 simpleUpload: {
                     uploadUrl: 'path_to_image_controller',
                     headers: {
