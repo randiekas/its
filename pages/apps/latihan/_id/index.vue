@@ -89,16 +89,13 @@
                                 {{ item }}
                             </v-btn>
                         </v-card-title>
-                        {{ form.opsi }}
+                        
                         <v-divider/>
                         <v-card-text
                             v-if="opsiDipilih!==false && form.opsi[opsiDipilih]">
-                            <v-text-field
+                            <my-editor
                                 v-model="form.opsi[opsiDipilih].jawaban"
-                                label="Jawaban"
-                                persistent-placeholder
-                                hide-details=""/>
-
+                                label="Jawaban"/>
                             <v-subheader class="pl-0">Feedback</v-subheader>
                             <my-editor
                                 v-model="form.opsi[opsiDipilih].feedback"/>

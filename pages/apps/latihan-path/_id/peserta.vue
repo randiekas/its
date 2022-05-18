@@ -21,8 +21,8 @@
                     <v-card-text>
                         <div
                             class="mb-4"
-                            v-html="item.soal"/>
-                            <div
+                            v-html="content(item)"/>
+                            <!-- <div
                                 v-for="(row, key) in item.opsi"
                                 :key="key">
                                 <v-text-field
@@ -39,7 +39,7 @@
                                         {{ row.percobaan }}x
                                     </template>
                                 </v-text-field>
-                            </div>
+                            </div> -->
                     </v-card-text>
                 </v-card>
                 </v-card-text>
@@ -248,6 +248,32 @@ export default {
             this.table.data     = data.content
             this.table.count    = eval(data.count)
             this.isFetching     = false
+        },
+        renderStatus: function(status, konten){
+            const warna = {
+                'aktif': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small',
+                '1': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small success--text',
+                '0': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small error--text',
+                'undefined': 'v-btn v-btn--disabled v-btn--has-bg v-btn--rounded theme--light v-size--small',
+            }
+            return `<button type="button" class="${warna[status]}">
+                    <span class="v-btn__content">
+                        ${konten}
+                    </span>
+                </button>`
+        },
+        content: function(soal) {
+            // keep a map of all your variables
+            let value   = soal.soal;
+            var rx      = /(_____)/g;
+            let index   = 0 
+            value       = value.replace(rx,(item)=>{
+                index++
+                const opsi  = soal.opsi[index-1]
+                return this.renderStatus(opsi.status, opsi.jawaban || '_____')
+                
+            })
+            return window.WirisPlugin.Parser.initParse(value);
         },
         handelDetail: async function( item ){
             this.data   = []

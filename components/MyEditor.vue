@@ -15,9 +15,9 @@ export default {
                 placeholder: 'Ketik disini ...',
                 removePlugins: ['Title', 'FontSizeToolbar', 'HeadingToolbar', 'RemoveFormatToolbar', 'FontFamilyToolbar', 'HighlightToolbar', 'PageBreakToolbar', 'MediaEmbedToolbar'],
                 simpleUpload: {
-                    uploadUrl: 'path_to_image_controller',
+                    uploadUrl: 'https://rosetta-worker.biibo.id/uploader/files',
                     headers: {
-                        'Authorization': 'optional_token'
+                        'Authorization': ''
                     }
                 }
             }

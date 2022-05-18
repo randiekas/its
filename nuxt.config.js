@@ -19,7 +19,10 @@ export default {
 		],
 		link: [
 			{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-		]
+		],
+		script: [
+			{ src: 'https://cdn.jsdelivr.net/npm/@wiris/mathtype-generic@7.28.1/wirisplugin-generic.min.js' }
+		],
 	},
 
 	// Global CSS: https://go.nuxtjs.dev/config-css

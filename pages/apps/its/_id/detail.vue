@@ -42,29 +42,49 @@
                             <!-- <div
                                 class="mb-4"
                                 v-html="soal.soal"/> -->
-
-                            <div
-                                v-for="(item, index) in soal.opsi"
-                                :key="index">
-                                <v-text-field
-                                    persistent-placeholder
-                                    outlined
-                                    dense
-                                    v-model="item.jawabanSiswa"
-                                    :readonly="sub!=index"
-                                    :prefix="`${item.label}`"
-                                    :success="item.status==1"
-                                    :error="item.status==0"
-                                    :append-icon="ikonStatus[item.status]">
-                                    <template v-slot:append-outer>
-                                        <v-btn
-                                            @click="checkJawaban"
-                                            :disabled="sub!=index || item.percobaan === 0 || item.status === 1"
-                                            class="primary">Check ({{ item.percobaan }})</v-btn>
-                                    </template>
-                                </v-text-field>
-                            </div>
                         </v-card-text>
+                        <v-divider/>
+                        
+                        <div
+                            v-for="(item, index) in soal.opsi"
+                            :key="index">
+                            <template
+                                v-if="index==sub">
+                                <v-card-title>
+                                    Jawabanmu
+                                    <v-spacer/>
+                                    <v-btn
+                                        rounded
+                                        @click="checkJawaban"
+                                        :disabled="sub!=index || item.percobaan === 0 || item.status === 1"
+                                        class="primary">Check ({{ item.percobaan }})</v-btn>
+                                </v-card-title>
+
+                                <v-card-text>
+                                    <my-editor
+                                        v-model="item.jawabanSiswa"
+                                        label="Jawaban"/>
+                                </v-card-text>
+                            </template>
+                            <!-- <v-text-field
+                                persistent-placeholder
+                                outlined
+                                dense
+                                v-model="item.jawabanSiswa"
+                                :readonly="sub!=index"
+                                :prefix="`${item.label}`"
+                                :success="item.status==1"
+                                :error="item.status==0"
+                                :append-icon="ikonStatus[item.status]">
+                                <template v-slot:append-outer>
+                                    <v-btn
+                                        @click="checkJawaban"
+                                        :disabled="sub!=index || item.percobaan === 0 || item.status === 1"
+                                        class="primary">Check ({{ item.percobaan }})</v-btn>
+                                </template>
+                            </v-text-field> -->
+                        </div>
+
                         <v-card-actions>
                             <v-spacer/>
                             <v-btn
@@ -77,7 +97,7 @@
                                 <!-- <v-btn
                                     class="primary">Ulangi</v-btn> -->
                                 <v-btn
-                                    :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0"
+                                    v-if="!(soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0)"
                                     @click="handelSoalSelanjutnya"
                                     class="primary">Soal Selanjutnya</v-btn>
                             </template>
@@ -162,12 +182,10 @@ export default {
     mounted: function(){
         this.handelLoadData()
     },
-      computed: {
+    computed: {
         content() {
+            
             // keep a map of all your variables
-            let valueMap = {
-                jawaban: `<button type="button" class="primary v-btn--rounded v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--small"><span class="v-btn__content">${this.soal.opsi[this.sub].jawabanSiswa||'_____'}</span></button>`,
-            };
 
             let value   = this.soal.soal;
             var rx      = /(_____)/g;
@@ -175,19 +193,15 @@ export default {
             value       = value.replace(rx,(item)=>{
                 index++
                 if(index===this.sub+1){
-                    return '{{jawaban}}'
+                    const opsi  = this.soal.opsi[this.sub]
+                    return this.renderStatus(opsi.status==undefined?'aktif':opsi.status, opsi.jawabanSiswa||'_____')
                 }else{
-                    return `<button type="button" class="primary v-btn--rounded v-btn v-btn--is-elevated v-btn--disabled v-btn--has-bg theme--light v-size--small"><span class="v-btn__content">${this.soal.opsi[index-1].jawabanSiswa||'_____'}</span></button>`
+                    const opsi  = this.soal.opsi[index-1]
+                    return this.renderStatus(opsi.status, opsi.jawabanSiswa || '_____')
                 }
-                return item;
+                
             })
-
-            let allKeys = Object.keys(valueMap);
-            allKeys.forEach((key) => {
-                var myRegExp = new RegExp('{{' + key + '}}','i');
-                value = value.replace(myRegExp, valueMap[key]);
-            });
-            return value;
+            return window.WirisPlugin.Parser.initParse(value);
         }
     },
     methods: {
@@ -218,6 +232,19 @@ export default {
 
         },
 
+        renderStatus: function(status, konten){
+            const warna = {
+                'aktif': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small',
+                '1': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small success--text',
+                '0': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small error--text',
+                'undefined': 'v-btn v-btn--disabled v-btn--has-bg v-btn--rounded theme--light v-size--small',
+            }
+            return `<button type="button" class="${warna[status]}">
+                    <span class="v-btn__content">
+                        ${konten}
+                    </span>
+                </button>`
+        },
         checkJawaban: function(){
             
             let opsi                    = Object.assign({}, this.soal.opsi[this.sub])
@@ -252,13 +279,13 @@ export default {
                     item.percobaan  = item.opsi.map((row)=> row.riwayat)
                     return {
                         latihan_detail_id: item.id,
-                        jumlah_percobaan:0,
-                        percobaan:JSON.stringify(item.percobaan),
-                        status:item.status,
+                        jumlah_percobaan: 0,
+                        percobaan: JSON.stringify(item.percobaan),
+                        status: item.opsi.filter((row)=> row.status === 1).length === item.opsi.length?1:0
                     }
                 })
             }
-
+            
             this.$api.$post(`path/saya/${this.id}/latihan/${this.path_latihan_id}`, payload).then((resp)=>{
                 this.setFetching(false)
                 this.setConfirmation({
@@ -273,3 +300,16 @@ export default {
     }
 }
 </script>
+<style>
+figure img{
+    max-width: 100%;
+}
+.v-btn__content p{
+    margin-bottom: 0px;
+}
+
+.v-btn.v-size--small{
+    height: auto!important;
+    min-height: 28px!important;
+}
+</style>
