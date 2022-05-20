@@ -249,7 +249,7 @@ export default {
             this.table.count    = eval(data.count)
             this.isFetching     = false
         },
-        renderStatus: function(status, konten){
+        renderStatus: function(status, konten, percobaan){
             const warna = {
                 'aktif': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small',
                 '1': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small success--text',
@@ -258,7 +258,7 @@ export default {
             }
             return `<button type="button" class="${warna[status]}">
                     <span class="v-btn__content">
-                        ${konten}
+                        ${konten} (${percobaan})
                     </span>
                 </button>`
         },
@@ -270,7 +270,7 @@ export default {
             value       = value.replace(rx,(item)=>{
                 index++
                 const opsi  = soal.opsi[index-1]
-                return this.renderStatus(opsi.status, opsi.jawaban || '_____')
+                return this.renderStatus(opsi.status, opsi.jawaban || '_____', opsi.percobaan)
                 
             })
             return window.WirisPlugin.Parser.initParse(value);
@@ -294,3 +294,16 @@ export default {
     }
 }
 </script>
+<style>
+figure img{
+    max-width: 100%;
+}
+.v-btn__content p{
+    margin-bottom: 0px;
+}
+
+.v-btn.v-size--small{
+    height: auto!important;
+    min-height: 28px!important;
+}
+</style>
