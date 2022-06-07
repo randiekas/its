@@ -93,6 +93,13 @@
                         <v-divider/>
                         <v-card-text
                             v-if="opsiDipilih!==false && form.opsi[opsiDipilih]">
+                            <v-text-field
+                                v-model="form.opsi[opsiDipilih].bobot"
+                                persistent-placeholder
+                                type="number"
+                                label="Bobot jawaban"
+                                hide-details=""/>
+                            <v-subheader class="pl-0">Jawaban</v-subheader>
                             <my-editor
                                 v-model="form.opsi[opsiDipilih].jawaban"
                                 label="Jawaban"/>
@@ -159,6 +166,7 @@ export default {
                     label: '',
                     jawaban: '',
                     feedback: '',
+                    bobot: 1,
                 }
             }
         },
@@ -176,6 +184,7 @@ export default {
                         label: '',
                         jawaban: '',
                         feedback: '',
+                        bobot: 1,
                     }
                 )
             })
