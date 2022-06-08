@@ -3,9 +3,24 @@
         <v-dialog
             v-model="popup"
             persistent
-            width="600">
+            width="720">
             <v-card>
-                <v-card-title>Rincian Jawaban Siswa</v-card-title>
+                <v-card-title>
+                    Rincian Jawaban Siswa
+                    <v-spacer/>
+                    <v-btn 
+                        class="primary white--text"
+                        small
+                        rounded>
+                        Percobaan Menjawab
+                    </v-btn>
+                    <v-btn 
+                        class="deep-purple accent-4 white--text"
+                        small
+                        rounded>
+                        Bobot
+                    </v-btn>
+                </v-card-title>
                 <v-card-text>
                 <v-card
                     v-for="(item, index) in data"
@@ -13,9 +28,9 @@
                     class="mb-4"
                     outlined>
                     <v-card-title>
-                        Soal
-                        <v-spacer/>
                         {{index+1}}/{{ data.length }}
+                        <v-spacer/>
+                        100
                     </v-card-title>
                     <v-divider/>
                     <v-card-text>
@@ -55,6 +70,13 @@
         </v-dialog>
 		<div class="primary pb-16">
 			<v-container>
+                <!-- <v-badge
+                    content="2"
+                    offset-x="-10"/>
+                <v-badge
+                    color="deep-purple accent-4"
+                    content="30"
+                    offset-x="-30"/> -->
 				<Head
 					title="Peserta"
 					subtitle="Kelola data latihan berbasis ITS">
@@ -203,7 +225,8 @@ export default {
                     },
                     { text: 'Nama', value: 'akun.email' },
                     { text: 'Email', value: 'akun.nama' },
-                    { text: 'Jumlah Benar', value: 'jumlah_benar' },
+                    { text: 'Jumlah Soal Benar', value: 'jumlah_benar' },
+                    { text: 'Nilai', value: 'nilai' },
                     { text: 'Mengikuti Pada', value: 'created_at' },
                     { text: '', value: 'aksi' },
                 ],
@@ -249,7 +272,7 @@ export default {
             this.table.count    = eval(data.count)
             this.isFetching     = false
         },
-        renderStatus: function(status, konten, percobaan){
+        renderStatus: function(status, konten, percobaan, bobot){
             const warna = {
                 'aktif': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small',
                 '1': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small success--text',
@@ -258,7 +281,10 @@ export default {
             }
             return `<button type="button" class="${warna[status]}">
                     <span class="v-btn__content">
-                        ${konten} (${percobaan})
+                        ${konten}
+
+                        <span class="v-badge theme--light"><span class="v-badge__wrapper"><span aria-atomic="true" aria-label="Badge" aria-live="polite" role="status" class="v-badge__badge primary" style="inset: auto auto calc(100% - 4px) calc(100% - -10px);">${percobaan}</span></span></span>
+                        <span class="v-badge theme--light"><span class="v-badge__wrapper"><span aria-atomic="true" aria-label="Badge" aria-live="polite" role="status" class="v-badge__badge deep-purple accent-4" style="inset: auto auto calc(100% - 4px) calc(100% - -30px);">${bobot}</span></span></span>
                     </span>
                 </button>`
         },
@@ -270,7 +296,7 @@ export default {
             value       = value.replace(rx,(item)=>{
                 index++
                 const opsi  = soal.opsi[index-1]
-                return this.renderStatus(opsi.status, opsi.jawaban || '_____', opsi.percobaan)
+                return this.renderStatus(opsi.status, opsi.jawaban || '_____', opsi.percobaan, opsi.bobot)
                 
             })
             return window.WirisPlugin.Parser.initParse(value);

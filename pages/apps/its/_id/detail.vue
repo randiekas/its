@@ -44,7 +44,6 @@
                                 v-html="soal.soal"/> -->
                         </v-card-text>
                         <v-divider/>
-                        
                         <div
                             v-for="(item, index) in soal.opsi"
                             :key="index">
@@ -97,7 +96,7 @@
                                 <!-- <v-btn
                                     class="primary">Ulangi</v-btn> -->
                                 <v-btn
-                                    v-if="!(soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0)"
+                                    :disabled="soal.opsi[soal.opsi.length-1].percobaan!=0 && soal.opsi[soal.opsi.length-1].status!=1"
                                     @click="handelSoalSelanjutnya"
                                     class="primary">Soal Selanjutnya</v-btn>
                             </template>
@@ -213,6 +212,7 @@ export default {
                 item.opsi           = JSON.parse(item.opsi).map((row)=>{
                     return {
                         ...row,
+                        jawabanSiswa: '',
                         percobaan: item.maksimal_percobaan,
                         riwayat: [],
                     }
@@ -249,7 +249,7 @@ export default {
             
             let opsi                    = Object.assign({}, this.soal.opsi[this.sub])
             opsi.percobaan              -= 1
-            opsi.status                 = opsi.jawaban == opsi.jawabanSiswa ? 1 : 0
+            opsi.status                 = opsi.jawaban.toLowerCase() == opsi.jawabanSiswa.toLowerCase() ? 1 : 0
             opsi.riwayat.push({
                 jawaban: opsi.jawabanSiswa,
                 status: opsi.status,
@@ -277,11 +277,17 @@ export default {
             const payload   = {
                 detail: this.detail.latihan.soal.map((item)=>{
                     item.percobaan  = item.opsi.map((row)=> row.riwayat)
+                    let bobot       = 0
+                    item.opsi.filter((row)=>{
+                        bobot       += row.status==1?eval(row.bobot):0
+                    })
+                    item.opsi.filter((row)=> row.status === 1).length === item.opsi.length?1:0
                     return {
                         latihan_detail_id: item.id,
                         jumlah_percobaan: 0,
                         percobaan: JSON.stringify(item.percobaan),
-                        status: item.opsi.filter((row)=> row.status === 1).length === item.opsi.length?1:0
+                        status: item.opsi.filter((row)=> row.status === 1).length === item.opsi.length?1:0,
+                        bobot,
                     }
                 })
             }

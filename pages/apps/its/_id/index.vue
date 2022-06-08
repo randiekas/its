@@ -59,9 +59,9 @@
                         {{ item.nama }}
                         <v-spacer/>
                         <v-btn
-                            v-if="item.hasil.jumlah_benar"
+                            v-if="item.hasil.nilai"
                             text>
-                            Jumlah Benar Kamu: {{ item.hasil.jumlah_benar }}
+                            Nilai: {{ item.hasil.nilai }}
                         </v-btn>
                         <v-btn text>
                             Minimum benar: {{ item.minimun_benar }}
@@ -71,16 +71,16 @@
                         </v-btn>
                         <v-btn text icon large>
                             <v-icon
-                                v-if="index==0 && item.hasil.jumlah_benar==undefined">
+                                v-if="index==0 && item.hasil.nilai==undefined">
                                 mdi-lock-open-variant
                             </v-icon>
                             <v-icon
-                                v-else-if="index==0 && item.hasil.jumlah_benar!=undefined"
+                                v-else-if="index==0 && item.hasil.nilai!=undefined"
                                 color="green">
                                 mdi-check-decagram
                             </v-icon>
                             <v-icon
-                                v-else-if="detail.path.latihan[index-1].hasil.jumlah_benar>=detail.path.latihan[index-1].minimun_benar">
+                                v-else-if="detail.path.latihan[index-1].hasil.nilai>=detail.path.latihan[index-1].minimun_benar">
                                 mdi-lock-open-variant
                             </v-icon>
                             <v-icon
