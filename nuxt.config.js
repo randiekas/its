@@ -67,42 +67,36 @@ export default {
 			home: '/apps/beranda'
 		},
 		strategies: {
+			local: { 
+				token: {
+					property: 'data.token',
+					global: true,
+					required: true,
+					type: 'Bearer'
+				},
+				user: {
+					property: 'data',
+					  autoFetch: true
+				},
+				endpoints: {
+					login: { 
+						url: `${process.env.API_URL}/akun/masuk/scola`, 
+					},
+					logout: false,
+					user: {
+						url: `${process.env.API_URL}/akun/info`, 
+						propertyName: 'dataasdfsdf',
+					},
+				},
+			},
 			google: {
 				clientId: '459074254974-e0l81r9tif92osj98ksurom0jq9v4hcc.apps.googleusercontent.com',
-				// clientId: '564028017740-p7es7i3bmudj1dt47me1hhpqnmnhp2sv.apps.googleusercontent.com',
-				scheme: 'oauth2',
 				endpoints: {
-					authorization: 'https://accounts.google.com/o/oauth2/auth',
-					token: undefined,
-					userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo',
 					logout: `${process.env.FRONTEND_URL}`
-					// logout: 'https://example.com/logout'
 				},
-				token: {
-					property: 'access_token',
-					type: 'Bearer',
-					maxAge: 86400
-				},
-				refreshToken: {
-					property: 'refresh_token',
-					// maxAge: 86400
-					maxAge: 60 * 60 * 24 * 30
-				},
-				responseType: 'token',
-				grantType: 'authorization_code',
-				accessType: undefined,
-				// redirectUri: "http://www.idisi.in/masuk",
-				// logoutRedirectUri: "http://www.idisi.in",
 				redirectUri: `${process.env.FRONTEND_URL}/masuk`,
-				logoutRedirectUri: `${process.env.FRONTEND_URL}`,
-				// https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata
-				// scope: ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive.appdata'],
-				// 'openid', 'profile', 'email'
-				scope: [],
-				state: 'UNIQUE_AND_NON_GUESSABLE',
+				responseType: 'token id_token',
 				codeChallengeMethod: '',
-				responseMode: '',
-				acrValues: '',
 			},
 		}
 	},

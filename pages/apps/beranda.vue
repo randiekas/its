@@ -39,9 +39,9 @@
 			<p class="white--text text-overline d-flex">
 				ITS yang kamu ikuti
 				<v-spacer/>
-				<v-btn text small class="white--text">
+				<!-- <v-btn text small class="white--text">
 					Lihat Semua
-				</v-btn>
+				</v-btn> -->
 			</p>
 			<v-row v-if="isFetching" class="mb-8">
 				<v-col sm="12" md="3" cols="12">
@@ -94,7 +94,7 @@
 					</v-col>
 				</template>
 			</v-row>
-			<p class="white--text text-overline">Buat Latihan Soal Berbasis ITS mu sendiri</p>
+			<p v-if="tipe==='guru'" class="white--text text-overline">Buat Latihan Soal Berbasis ITS mu sendiri</p>
 		</v-container>
 		</div>
 		<v-container class="mt-n16">

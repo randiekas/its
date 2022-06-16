@@ -160,7 +160,7 @@ export default {
                 handelOk: ()=>{},
             },
 			apps:{
-				'umum': [
+				'guru': [
 					{
 						"ikon": "mdi-pencil-box-multiple-outline",
 						"nama":"Latihan",
@@ -172,82 +172,6 @@ export default {
 						"nama":"Latihan Path",
 						"deskripsi":"Kelola latihan path, agar setiap urutan latihan bisa disesuaikan dengan nilai",
 						"link":"/apps/latihan-path"
-					},
-					// {
-					// 	"ikon": "mdi-map-marker-radius-outline",
-					// 	"nama":"Kecamatan",
-					// 	"deskripsi":"Kelola data master Kecamatan",
-					// 	"link":"/apps/kecamatan"
-					// },
-					// {
-					// 	"ikon": "mdi-home-city",
-					// 	"nama":"Desa",
-					// 	"deskripsi":"Kelola data master Desa/Kelurahan",
-					// 	"link":"/apps/desa"
-					// },
-                    // {
-					// 	"ikon": "mdi-home-group",
-					// 	"nama":"Dusun",
-					// 	"deskripsi":"Kelola data master Dusun",
-					// 	"link":"/apps/dusun"
-					// },
-					// {
-					// 	"ikon": "mdi-account-group-outline",
-					// 	"nama":"Penduduk",
-					// 	"deskripsi":"Kelola data penduduk",
-					// 	"link":"/apps/penduduk"
-					// },
-					// {
-					// 	"ikon": "mdi-account-box-multiple-outline",
-					// 	"nama":"K. Keluarga",
-					// 	"deskripsi":"Kelola data kartu keluarga",
-					// 	"link":"/apps/kk"
-					// },
-                    // {
-					// 	"ikon": "mdi-file-chart",
-					// 	"nama":"Laporan",
-					// 	"deskripsi":"Informasi laporan",
-					// 	"link":"/apps/laporan"
-					// },
-				],
-				'desa': [
-                    {
-						"ikon": "mdi-home-group",
-						"nama":"Dusun",
-						"deskripsi":"Kelola data master Dusun",
-						"link":"/apps/dusun"
-					},
-					{
-						"ikon": "mdi-account-group-outline",
-						"nama":"Penduduk",
-						"deskripsi":"Kelola data penduduk",
-						"link":"/apps/penduduk"
-					},
-					{
-						"ikon": "mdi-account-box-multiple-outline",
-						"nama":"K. Keluarga",
-						"deskripsi":"Kelola data kartu keluarga",
-						"link":"/apps/kk"
-					},
-                    {
-						"ikon": "mdi-file-chart",
-						"nama":"Laporan",
-						"deskripsi":"Informasi laporan",
-						"link":"/apps/laporan"
-					},
-					{
-						"ikon": "mdi-home-city",
-						"nama":"Desa",
-						"deskripsi":"Kelola data master Desa/Kelurahan",
-						"link":"/apps/desa"
-					},
-				],
-				'kecamatan': [
-                    {
-						"ikon": "mdi-file-chart",
-						"nama":"Laporan",
-						"deskripsi":"Informasi laporan",
-						"link":"/apps/laporan"
 					},
 				],
 			},
@@ -270,6 +194,7 @@ export default {
         },
 		handelKeluar: async function(){
             await this.$auth.logout()
+			window.location.href	= window.location.origin
         },
 		setFetching: function (status){this.isFetching=status},
 		setSnackbar: function (message){this.snackbar={status: true, message}},
