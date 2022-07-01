@@ -5,16 +5,18 @@
 				<Head
 					title="Latihan Path"
 					subtitle="Kelola data latihan berbasis ITS">
-                    <v-btn
-                        exact
-                        small
-                        class="white"
-                        @click="popup=true">
-                        <v-icon left>
-                            mdi-account-plus
-                        </v-icon>
-                        Create
-                    </v-btn>
+                    <div>
+                        <v-btn
+                            exact
+                            small
+                            class="white"
+                            @click="popup=true">
+                            <v-icon left>
+                                mdi-account-plus
+                            </v-icon>
+                            Create
+                        </v-btn>
+                    </div>
 				</Head>
 				<v-row class="mt-2">
 

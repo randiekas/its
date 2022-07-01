@@ -52,11 +52,7 @@ export default {
 		// https://go.nuxtjs.dev/content
 		'@nuxt/content',
 		'@nuxtjs/auth-next',
-			'@nuxtjs/moment',
-			['nuxt-gmaps', {
-				key: 'AIzaSyA9UiS35-dxdQDy7_inlsRXW_SJrnVMqs8',
-				//you can use libraries: ['places']
-			}]
+		'@nuxtjs/moment',
 	],
 	auth: {
 		// Options

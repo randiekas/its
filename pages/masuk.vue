@@ -24,7 +24,7 @@ export default {
 		const tipe			= $auth.$storage.getUniversal("loginType")
 		
 		
-		await $axios.$post(`/akun/masuk`,{
+		await $axios.$post(`/akun/masuk/google`,{
 			token:token,
 			tipe:tipe,
 			device:2,

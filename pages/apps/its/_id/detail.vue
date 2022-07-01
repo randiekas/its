@@ -110,7 +110,7 @@
                         <v-card-text>
                             <p
                                 v-if="soal.opsi[sub].status==0"
-                                v-html="soal.opsi[sub].feedback"></p>
+                                v-html="feedback"></p>
                             <p
                                 v-else
                                 v-html="'Silahkan jawab soal untuk mendapatkan feedback'"></p>
@@ -175,7 +175,8 @@ export default {
                 0: 'mdi-close-circle',
                 1: 'mdi-check-decagram',
                 'undefined': '',
-            }
+            },
+            feedback: '',
         }
     },
     mounted: function(){
@@ -255,6 +256,7 @@ export default {
                 status: opsi.status,
             })
             this.soal.opsi              = this.soal.opsi.map((item, index)=> this.sub==index?opsi:item)
+            this.handelCheckRelateFeedback()
             if(this.sub == this.soal.opsi.length-1){
                 // this.handelSoalSelanjutnya()
             }else if(opsi.percobaan==0 || opsi.status){
@@ -274,7 +276,7 @@ export default {
 
         handelSelesai: async function(){
             this.setFetching(true)
-            const payload   = {
+            const payload       = {
                 detail: this.detail.latihan.soal.map((item)=>{
                     item.percobaan  = item.opsi.map((row)=> row.riwayat)
                     let bobot       = 0
@@ -302,6 +304,28 @@ export default {
                 })
                 this.$router.push(`/apps/its/${this.id}`)
             })
+        },
+
+        handelCheckRelateFeedback: function(){
+            this.feedback   = ""
+            const feedback  = Object.assign([], this.soal.opsi[this.sub].feedback)
+            let opsi        = Object.assign({}, this.soal.opsi[this.sub])
+            let result      = feedback.filter((item)=>item.input.toLowerCase()==opsi.jawabanSiswa.toLowerCase())
+            if(feedback.length==0){
+                    result  = 'Feedback belum di setup'
+            }else{
+                if(result.length>0){
+                    result      = result[0].output
+                }else{
+                    result      = feedback.filter((item)=>item.input.toLowerCase()=='')
+                    if(result.length==0){
+                        result  = 'Feedback belum disetup'
+                    }else{
+                        result  = result[0].output
+                    }
+                }
+            }
+            this.feedback   = result
         }
     }
 }

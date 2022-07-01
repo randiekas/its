@@ -3,23 +3,11 @@
         <v-dialog
             v-model="popup"
             persistent
-            width="720">
+            width="800">
             <v-card>
                 <v-card-title>
                     Rincian Jawaban Siswa
                     <v-spacer/>
-                    <v-btn 
-                        class="primary white--text"
-                        small
-                        rounded>
-                        Percobaan Menjawab
-                    </v-btn>
-                    <v-btn 
-                        class="deep-purple accent-4 white--text"
-                        small
-                        rounded>
-                        Bobot
-                    </v-btn>
                 </v-card-title>
                 <v-card-text>
                 <v-card
@@ -30,7 +18,16 @@
                     <v-card-title>
                         {{index+1}}/{{ data.length }}
                         <v-spacer/>
-                        100
+                        <v-icon
+                            v-if="item.jawaban.status"
+                            color="green">
+                            mdi-check-decagram
+                        </v-icon>
+                        <v-icon
+                            v-else
+                            color="red">
+                            mdi-decagram
+                        </v-icon>
                     </v-card-title>
                     <v-divider/>
                     <v-card-text>
@@ -55,6 +52,44 @@
                                     </template>
                                 </v-text-field>
                             </div> -->
+                        <p class="text-overline">Riwayat Jawaban</p>
+                        <v-simple-table dense>
+                            <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <th class="text-left" width="20">
+                                        #
+                                    </th>
+                                    <th 
+                                        v-for="row in item.maksimal_percobaan"
+                                        :key="row">
+                                        Percobaan {{ row }}
+                                    </th>
+                                    <th class="text-center">
+                                        Status
+                                    </th>
+                                    <th class="text-center">
+                                        Nilai Bobot
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(row, key) in item.opsi"
+                                    :key="key">
+                                    <td class="text-center">{{ key+1 }}</td>
+                                    <td 
+                                        v-for="i in item.maksimal_percobaan"
+                                        :key="i">
+                                        <div
+                                            v-html="item.jawaban.percobaan[key][i-1]?item.jawaban.percobaan[key][i-1].jawaban:''"/>
+                                    </td>
+                                    <td class="text-center">{{ item.jawaban.percobaan[key][item.jawaban.percobaan[key].length-1].status }}</td>
+                                    <td class="text-center">{{ item.jawaban.percobaan[key][item.jawaban.percobaan[key].length-1].status?(item.opsi[key].bobot/item.totalBobot)*100:'0' }}</td>
+                                </tr>
+                            </tbody>
+                            </template>
+                        </v-simple-table>
                     </v-card-text>
                 </v-card>
                 </v-card-text>
@@ -282,9 +317,6 @@ export default {
             return `<button type="button" class="${warna[status]}">
                     <span class="v-btn__content">
                         ${konten}
-
-                        <span class="v-badge theme--light"><span class="v-badge__wrapper"><span aria-atomic="true" aria-label="Badge" aria-live="polite" role="status" class="v-badge__badge primary" style="inset: auto auto calc(100% - 4px) calc(100% - -10px);">${percobaan}</span></span></span>
-                        <span class="v-badge theme--light"><span class="v-badge__wrapper"><span aria-atomic="true" aria-label="Badge" aria-live="polite" role="status" class="v-badge__badge deep-purple accent-4" style="inset: auto auto calc(100% - 4px) calc(100% - -30px);">${bobot}</span></span></span>
                     </span>
                 </button>`
         },
@@ -301,18 +333,24 @@ export default {
             })
             return window.WirisPlugin.Parser.initParse(value);
         },
+        contentOnly: function(soal){
+            return window.WirisPlugin.Parser.initParse(soal);
+        },
         handelDetail: async function( item ){
             this.data   = []
             this.popup  = true
             this.data   = (await this.$api.$get(`path/${this.id}/latihan/${this.path_latihan_id}/peserta/${item.id}`)).data.map((item)=>{
+                let totalBobot          = 0
                 item.jawaban.percobaan  = JSON.parse(item.jawaban.percobaan)
                 item.opsi               = JSON.parse(item.opsi).map((row, index)=>{
+                    totalBobot          += row.bobot
                     const jawaban       = item.jawaban.percobaan[index]
                     row.jawaban         = jawaban[jawaban.length-1].jawaban
                     row.status          = jawaban[jawaban.length-1].status
                     row.percobaan       = item.jawaban.percobaan[index].length
                     return row
                 })
+                item.totalBobot         = totalBobot
                 return item
             })
         },
@@ -324,8 +362,11 @@ export default {
 figure img{
     max-width: 100%;
 }
+div p{
+    margin-bottom: 0px!important;
+}
 .v-btn__content p{
-    margin-bottom: 0px;
+    margin-bottom: 0px!important;
 }
 
 .v-btn.v-size--small{

@@ -99,21 +99,50 @@
                                 type="number"
                                 label="Bobot jawaban"
                                 hide-details=""/>
-                            <v-subheader class="pl-0">Jawaban</v-subheader>
-                            <my-editor
-                                v-model="form.opsi[opsiDipilih].jawaban"
-                                label="Jawaban"/>
-                            <v-subheader class="pl-0">Feedback</v-subheader>
-                            <my-editor
-                                v-model="form.opsi[opsiDipilih].feedback"/>
-
-                            <v-subheader class="pl-0">Hint</v-subheader>
-                            <my-editor
-                                v-model="form.opsi[opsiDipilih].hint"/>
+                            <v-card outlined elevation="0" class="mt-2">
+                                <v-card-title>Jawaban </v-card-title>
+                                <my-editor
+                                    v-model="form.opsi[opsiDipilih].jawaban"
+                                    label="Jawaban"/>
+                            </v-card>
+                            <v-card outlined elevation="0" class="mt-2">
+                                <v-card-title>Hint </v-card-title>
+                                <my-editor
+                                    v-model="form.opsi[opsiDipilih].hint"/>
+                            </v-card>
+                            <v-card outlined elevation="0" class="mt-2">
+                                <v-card-title>
+                                    Feedback
+                                    <v-spacer/>
+                                    <v-btn 
+                                        @click="form.opsi[opsiDipilih].feedback.push({input: '', output:''})"
+                                        small 
+                                        rounded>
+                                        Tambah Feedback
+                                    </v-btn>
+                                </v-card-title>
+                                <div
+                                    v-for="(item, index) in form.opsi[opsiDipilih].feedback"
+                                    :key="index">
+                                    <v-row dense>
+                                        <v-col md="4">
+                                            <my-editor
+                                                v-model="item.input"/>
+                                        </v-col>
+                                        <v-col md="8">
+                                            <my-editor
+                                                v-model="item.output"/>
+                                        </v-col>
+                                    </v-row>
+                                </div>
+                                <v-alert 
+                                    v-if="form.opsi[opsiDipilih].feedback.length==0"
+                                    type="info" class="mb-0">Belum ada feedback yang di setup</v-alert>
+                            </v-card>
                         </v-card-text>
                         <v-card-text
                             v-else>
-                            <v-alert type="info">Buat soal dengan opsi jawaban (_____)</v-alert>
+                            <v-alert type="info" class="mb-0">Buat soal dengan opsi jawaban (_____)</v-alert>
                         </v-card-text>
                     </v-card>
                     <div class="text-right mt-4">
@@ -165,7 +194,7 @@ export default {
                 this.form.opsi[this.opsiDipilih]    = {
                     label: '',
                     jawaban: '',
-                    feedback: '',
+                    feedback: [],
                     bobot: 1,
                 }
             }
@@ -183,7 +212,7 @@ export default {
                     {
                         label: '',
                         jawaban: '',
-                        feedback: '',
+                        feedback: [],
                         bobot: 1,
                     }
                 )
