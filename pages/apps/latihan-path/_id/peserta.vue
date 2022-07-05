@@ -84,8 +84,11 @@
                                         <div
                                             v-html="item.jawaban.percobaan[key][i-1]?item.jawaban.percobaan[key][i-1].jawaban:''"/>
                                     </td>
-                                    <td class="text-center">{{ item.jawaban.percobaan[key][item.jawaban.percobaan[key].length-1].status }}</td>
-                                    <td class="text-center">{{ item.jawaban.percobaan[key][item.jawaban.percobaan[key].length-1].status?(item.opsi[key].bobot/item.totalBobot)*100:'0' }}</td>
+                                    <td class="text-center">
+                                        <v-btn v-if="row.status" x-small rounded color='green' dark>Benar</v-btn>
+                                        <v-btn v-else x-small rounded color='red' dark>Salah</v-btn>
+                                    </td>
+                                    <td class="text-center">{{ row.status?(row.bobot/item.totalBobot)*100:'0' }}</td>
                                 </tr>
                             </tbody>
                             </template>
@@ -204,6 +207,10 @@
                     <template v-slot:[`item.created_at`]="{ item }">
                         {{ $moment(item.created_at).format('DD/MM/YYYY') }}
                     </template>
+                    <template v-slot:[`item.email`]="{ item }">
+                        <span v-if="item.email!='null'">{{ item.email }}</span>
+                        <span v-else>-</span>
+                    </template>
                     <template v-slot:[`item.updated_at`]="{ item }">
                         {{ item.updated_at?$moment(item.updated_at).format('DD/MM/YYYY'):'-' }}
                     </template>
@@ -258,8 +265,8 @@ export default {
                         sortable: false,
                         value: 'no',
                     },
-                    { text: 'Nama', value: 'akun.email' },
-                    { text: 'Email', value: 'akun.nama' },
+                    { text: 'Nama', value: 'akun.nama' },
+                    { text: 'Email', value: 'akun.email' },
                     { text: 'Jumlah Soal Benar', value: 'jumlah_benar' },
                     { text: 'Nilai', value: 'nilai' },
                     { text: 'Mengikuti Pada', value: 'created_at' },

@@ -129,9 +129,14 @@
                                             <my-editor
                                                 v-model="item.input"/>
                                         </v-col>
-                                        <v-col md="8">
+                                        <v-col md="7">
                                             <my-editor
                                                 v-model="item.output"/>
+                                        </v-col>
+                                        <v-col align="center">
+                                            <v-btn icon rounded small @click="handelHapusFeedback(index)">
+                                                <v-icon>mdi-delete</v-icon>
+                                            </v-btn>
                                         </v-col>
                                     </v-row>
                                 </div>
@@ -298,6 +303,9 @@ export default {
                     })
                 }
             })
+        },
+        handelHapusFeedback: function(index){
+            this.form.opsi[this.opsiDipilih].feedback.splice(index, 1)
         }
     }
 }
