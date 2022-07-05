@@ -207,8 +207,8 @@
                     <template v-slot:[`item.created_at`]="{ item }">
                         {{ $moment(item.created_at).format('DD/MM/YYYY') }}
                     </template>
-                    <template v-slot:[`item.email`]="{ item }">
-                        <span v-if="item.email!='null'">{{ item.email }}</span>
+                    <template v-slot:[`item.akun.email`]="{ item }">
+                        <span v-if="item.akun.email!='null'">{{ item.akun.email }}</span>
                         <span v-else>-</span>
                     </template>
                     <template v-slot:[`item.updated_at`]="{ item }">
