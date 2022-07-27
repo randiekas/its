@@ -5,15 +5,13 @@
 			<v-row no-gutters>
 			<v-col xs="12" md="5" class="primary d-flex" cols="12">
 				<div class="mx-auto my-auto text-center">
-					<v-icon color="white" size="128">
-						mdi-account-group-outline
-					</v-icon>
+					<v-img src="/logo-white.png"  max-width="300"/>
 				</div>
 			</v-col>
 			<v-col xs="12" md="7">
-				<v-card-title>ITS</v-card-title>
+				<v-card-title>BTS</v-card-title>
 				<v-card-subtitle>
-					Intellegence Tutoring System <br/>
+					Brilliant Tutoring System<br/>
 					Make the student smarter with new experience learning.
 				</v-card-subtitle>
 				<v-card-subtitle></v-card-subtitle>

@@ -125,8 +125,8 @@
 			<nuxt-child
                 :apps="apps[tipe]"
 				:tipe="tipe"
-				:setConfirmation="setConfirmation"
                 :handelKeluar="handelKeluar"
+				:setConfirmation="setConfirmation"
                 :setFetching="setFetching"
 				:setSnackbar="setSnackbar"
 				:aesEncrypt="aesEncrypt"

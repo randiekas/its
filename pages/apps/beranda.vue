@@ -3,8 +3,8 @@
 		<div class="primary pb-16">
 		<v-container>
 			<Head
-				title="ITS"
-				subtitle="Latihan Soal Berbasis Intellegence Tutoring System"
+				title="BTS"
+				subtitle="Brilliant Tutoring System"
 				color="white--text">
 				<v-btn 
 					small 
