@@ -163,13 +163,13 @@ export default {
 				'guru': [
 					{
 						"ikon": "mdi-pencil-box-multiple-outline",
-						"nama":"Latihan",
+						"nama":"Latihan Sub Topik",
 						"deskripsi":"Kelola Data Latihan",
 						"link":"/apps/latihan"
 					},
 					{
 						"ikon": "mdi-timeline-check-outline",
-						"nama":"Latihan Path",
+						"nama":"Latihan Topik",
 						"deskripsi":"Kelola latihan path, agar setiap urutan latihan bisa disesuaikan dengan nilai",
 						"link":"/apps/latihan-path"
 					},
