@@ -3,7 +3,7 @@
 		<div class="primary pb-16">
 			<v-container>
 				<Head
-					title="Latihan Path"
+					title="Latihan Topik"
 					subtitle="Kelola data latihan berbasis ITS">
                     <div>
                         <v-btn

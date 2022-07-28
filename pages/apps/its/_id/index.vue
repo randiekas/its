@@ -88,6 +88,9 @@
                                 mdi-lock
                             </v-icon>
                         </v-btn>
+                        <v-icon>
+                            mdi-chevron-right
+                        </v-icon>
                     </v-card-title>
                 </v-card>
             </template>
@@ -121,12 +124,7 @@ export default {
         },
         handelKlikDetail: function(index, item){
             if(item.hasil.jumlah_benar!=undefined){
-                this.setConfirmation({
-                    status: true,
-                    title: 'Oops!',
-                    message: 'Kamu sudah mengikuti latihan ini, silahkan ikuti latihan selanjutnya',
-                    handelOk: ()=> this.setConfirmation({ status: false })
-                })
+                this.$router.push(`/apps/its/${this.id}/hasil?path_latihan_id=${item.path_latihan_id}&path_id=${this.detail.path_id}`)
                 return
             }else if(index>0){
                 const sebelumnya    = this.detail.path.latihan[index-1]

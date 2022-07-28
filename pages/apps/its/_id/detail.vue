@@ -10,7 +10,7 @@
                             exact
                             small
                             class="white"
-                            :to="`/apps/its/${id}`">
+                            @click="handelKembali">
                             <v-icon left>
                                 mdi-chevron-left
                             </v-icon>
@@ -88,7 +88,7 @@
                             <v-spacer/>
                             <v-btn
                                 v-if="(ke+1)==detail.latihan.soal.length"
-                                :disabled="soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0"
+                                :disabled="(soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0) || tipe=='guru'"
                                 @click="handelSelesai"
                                 class="primary">Selesai</v-btn>
                             <template
@@ -128,7 +128,7 @@
                                 <v-tab-item>
                                     <div
                                         v-if="hint"
-                                        v-html="soal.opsi[sub].hint">
+                                        v-html="renderLinkBlank(soal.opsi[sub].hint)">
                                     </div>
                                     <v-btn
                                         block
@@ -153,7 +153,7 @@
 <script>
 export default {
     layout:'apps',
-	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access' ],
+	props: [ 'setConfirmation', 'setSnackbar', 'setFetching', 'access', 'tipe' ],
     asyncData: async function({ route }){
         return {
             id: route.params.id,
@@ -326,6 +326,16 @@ export default {
                 }
             }
             this.feedback   = result
+        },
+        renderLinkBlank: function(html){
+            return html.replace(/<a href/g, `<a  target="_blank"  href`)
+        },
+        handelKembali: function(){
+            if(this.tipe=='guru'){
+                window.history.back()
+            }else{
+                this.$router.push(`/apps/its/${this.id}`)
+            }
         }
     }
 }

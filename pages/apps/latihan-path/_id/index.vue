@@ -90,6 +90,7 @@
                             {{ item.nama }}
                             <v-spacer/>
                             <v-btn 
+                                small
                                 outlined
                                 @click="handelHapusLatihan(item.id)"
                                 icon>
@@ -98,6 +99,17 @@
                                 </v-icon>
                             </v-btn>
                             <v-btn 
+                                small
+                                class="ml-2"
+                                outlined
+                                :to="`/apps/its/12/detail?path_latihan_id=${item.path_latihan_id}`">
+                                <v-icon left>
+                                    mdi-account-group-outline
+                                </v-icon>
+                                Review Soal
+                            </v-btn>
+                            <v-btn 
+                                small
                                 class="ml-2"
                                 outlined
                                 :to="`/apps/latihan-path/${id}/peserta?path_latihan_id=${item.path_latihan_id}`">

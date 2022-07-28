@@ -340,9 +340,6 @@ export default {
             })
             return window.WirisPlugin.Parser.initParse(value);
         },
-        contentOnly: function(soal){
-            return window.WirisPlugin.Parser.initParse(soal);
-        },
         handelDetail: async function( item ){
             this.data   = []
             this.popup  = true

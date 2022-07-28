@@ -3,18 +3,20 @@
 		<div class="primary pb-16">
 			<v-container>
 				<Head
-					title="Latihan"
+					title="Latihan Sub Topik"
 					subtitle="Kelola data latihan berbasis ITS">
-                    <v-btn
-                        exact
-                        small
-                        class="white"
-                        @click="handelCreate()">
-                        <v-icon left>
-                            mdi-account-plus
-                        </v-icon>
-                        Create
-                    </v-btn>
+                    <div>
+                        <v-btn
+                            exact
+                            small
+                            class="white"
+                            @click="handelCreate()">
+                            <v-icon left>
+                                mdi-account-plus
+                            </v-icon>
+                            Create
+                        </v-btn>
+                    </div>
 				</Head>
 				<v-row class="mt-2">
 
@@ -88,6 +90,12 @@
                         {{ item.updated_at?$moment(item.updated_at).format('DD/MM/YYYY'):'-' }}
                     </template>
                     <template v-slot:[`item.aksi`]="{ item }">
+                        <v-btn 
+                            @click="handelConfirmHapus(item)"
+                            icon
+                            small>
+                            <v-icon>mdi-delete</v-icon>
+                        </v-btn>
                         <v-btn 
                             @click="handelEdit(item)"
                             icon
@@ -265,7 +273,31 @@ export default {
         handelCreate: function(item){
             this.handelResetForm()
             this.popup  = true
-        }
+        },
+        handelConfirmHapus: function(item){
+            this.setConfirmation({
+                status: true,
+                title: 'Konfirmasi',
+                message: 'Apakah kamu ingin menghapus latihan soal ini ?',
+                handelOk: ()=>this.handelHapus(item)
+            })
+        },
+        handelHapus: async function(item){
+            this.setFetching(true)
+            this.data   = []
+            this.isFetching	            = true
+            this.$api.$delete(`latihan/${item.id}`).then((resp)=>{
+                this.setFetching(false)
+                console.log(resp.message)
+                if(resp.status){
+                    this.handelLoadData()
+                    this.setSnackbar("Latihan soal berhasi dihapus")
+                }else{
+                    this.setSnackbar(resp.message)
+                }
+            })
+            this.isFetching	= false
+        },
 
     }
 }

@@ -6,15 +6,17 @@
 				title="BTS"
 				subtitle="Brilliant Tutoring System"
 				color="white--text">
-				<v-btn 
-					small 
-					class="white"
-					v-on:click="handelKeluar">
-					<v-icon left>
-						mdi-logout
-					</v-icon>
-					Keluar Aplikasi
-				</v-btn>
+				<div>
+					<v-btn 
+						small 
+						class="white"
+						v-on:click="handelKeluar">
+						<v-icon left>
+							mdi-logout
+						</v-icon>
+						Keluar Aplikasi
+					</v-btn>
+				</div>
 			</Head>
 			<v-card class="mb-8">
 				<v-card-text>
