@@ -33,12 +33,12 @@
 					<v-btn
 						text
 						@click="confirmation.status=false">
-						Cancel
+						Batal
 					</v-btn>
 					<v-btn
 						outlined
 						@click="confirmation.handelOk(); confirmation.status=false">
-						Continue
+						Lanjutkan
 					</v-btn>
 				</v-card-actions>
 			</v-card>
@@ -56,7 +56,7 @@
 				text
 				v-bind="attrs"
 				@click="snackbar = false">
-				Close
+				Tutup
 				</v-btn>
 			</template>
 
@@ -193,8 +193,16 @@ export default {
             return Buffer.concat([decrypted, cipher.final()]).toString("utf-8");
         },
 		handelKeluar: async function(){
-            await this.$auth.logout()
-			window.location.href	= window.location.origin
+			this.setConfirmation({
+                    status: true,
+                    title: 'Konfirmasi',
+                    message: 'Apakah anda ingin melanjutkan untuk keluar?',
+                    handelOk: async ()=> {
+						await this.$auth.logout()
+						window.location.href	= window.location.origin
+					}
+                })
+            
         },
 		setFetching: function (status){this.isFetching=status},
 		setSnackbar: function (message){this.snackbar={status: true, message}},

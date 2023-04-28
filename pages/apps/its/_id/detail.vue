@@ -88,7 +88,7 @@
                             <v-spacer/>
                             <v-btn
                                 v-if="(ke+1)==detail.latihan.soal.length"
-                                :disabled="(soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0) || tipe=='guru'"
+                                :disabled="(soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0)"
                                 @click="handelSelesai"
                                 class="primary">Selesai</v-btn>
                             <template

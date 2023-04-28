@@ -84,11 +84,11 @@
                     <template v-slot:[`item.no`]="{ index }">
                         {{ index+1 }}
                     </template>
-                    <template v-slot:[`item.created_at`]="{ item }">
-                        {{ $moment(item.created_at).format('DD/MM/YYYY') }}
+                    <template v-slot:[`item.dibuat`]="{ item }">
+                        {{ $moment(item.dibuat).format('DD/MM/YYYY') }}
                     </template>
-                    <template v-slot:[`item.updated_at`]="{ item }">
-                        {{ item.updated_at?$moment(item.updated_at).format('DD/MM/YYYY'):'-' }}
+                    <template v-slot:[`item.diubah`]="{ item }">
+                        {{ item.diubah?$moment(item.diubah).format('DD/MM/YYYY'):'-' }}
                     </template>
                     <!-- <template v-slot:[`item.aksi`]="{ item }">
                         <v-btn
@@ -114,40 +114,42 @@
 			v-model="popup"
 			persistent
 			max-width="600px">
-			<v-card>
-				<v-card-title>
-				</v-card-title>
-				<v-card-text>
-					<v-container>
-						<v-row>
-							<v-col cols="12">
-								<v-text-field
-                                    v-model="form.nama"
-									dense
-									label="Nama Path"
-									outlined
-									required/>
-							</v-col>
+            <form @submit.prevent="handelSimpanForm">
+                <v-card>
+                    <v-card-title>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-text-field
+                                        v-model="form.nama"
+                                        dense
+                                        label="Nama Path"
+                                        outlined
+                                        required/>
+                                </v-col>
 
-						</v-row>
-					</v-container>
-				</v-card-text>
-				<v-card-actions>
-				<v-spacer></v-spacer>
-				<v-btn
-					color="blue darken-1"
-					text
-					@click="popup = false">
-					Close
-				</v-btn>
-				<v-btn
-					color="blue darken-1"
-					text
-					@click="handelSimpanForm()">
-					Simpan
-				</v-btn>
-				</v-card-actions>
-			</v-card>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="popup = false">
+                        Close
+                    </v-btn>
+                    <v-btn
+                        type="submit"
+                        color="blue darken-1"
+                        text>
+                        Simpan
+                    </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </form>
 		</v-dialog>
 	</div>
 </template>
@@ -175,8 +177,8 @@ export default {
                     { text: 'Nama', value: 'nama' },
                     { text: 'Jumlah Latihan', value: 'jumlah_latihan' },
                     { text: 'Jumlah Peserta', value: 'jumlah_peserta' },
-                    { text: 'Created', value: 'created_at' },
-                    { text: 'Updated', value: 'updated_at' },
+                    { text: 'Created', value: 'dibuat' },
+                    { text: 'Updated', value: 'diubah' },
                     { text: 'Status', value: 'status' },
                     // { text: '', value: 'aksi' },
                 ],

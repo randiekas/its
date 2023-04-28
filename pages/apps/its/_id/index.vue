@@ -54,6 +54,7 @@
                     :key="index"
                     hover
                     @click="handelKlikDetail(index, item)"
+                    :disabled="item.status==0"
                     outlined class="mb-3">
                     <v-card-title>
                         {{ item.nama }}
@@ -71,7 +72,11 @@
                         </v-btn>
                         <v-btn text icon large>
                             <v-icon
-                                v-if="index==0 && item.hasil.nilai==undefined">
+                                v-if="item.status==0">
+                                mdi-lock
+                            </v-icon>
+                            <v-icon
+                                v-else-if="index==0 && item.hasil.nilai==undefined">
                                 mdi-lock-open-variant
                             </v-icon>
                             <v-icon

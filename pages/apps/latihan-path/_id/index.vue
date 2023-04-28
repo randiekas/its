@@ -29,7 +29,7 @@
                             exact
                             small
                             class="white"
-                            to="/apps/latihan">
+                            to="/apps/latihan-path">
                             <v-icon left>
                                 mdi-chevron-left
                             </v-icon>
@@ -61,22 +61,43 @@
             </v-row>
             <v-row v-else>
                 <v-col md="3">
+                    <form @submit.prevent="handelSimpan">
                     <v-card>
                         <v-card-text
                             class="mb-3">
                             <v-text-field
+                                required
                                 label="Nama Latihan Path"
                                 v-model="detail.nama"
                                 persistent-placeholder/>
+                            <v-radio-group v-model="detail.status">
+                                <v-radio
+                                    label="Aktif"
+                                    :value="1"
+                                ></v-radio>
+                                <v-radio
+                                    label="Tidak Aktif"
+                                    :value="0"
+                                ></v-radio>
+                            </v-radio-group>
                             <v-btn
+                                type="submit"
                                 class="primary"
                                 rounded
-                                block
-                                @click="handelSimpan">
+                                block>
                                 Simpan
+                            </v-btn>
+                            <v-btn
+                                class="mt-2"
+                                outlined
+                                rounded
+                                block
+                                @click="handelHapus">
+                                Hapus
                             </v-btn>
                         </v-card-text>
                     </v-card>
+                    </form>
                 </v-col>
                 <v-col 
                     v-if="detail.latihan.length>0"
@@ -249,13 +270,30 @@ export default {
 
             this.latihan    = (await this.$api.$get(`latihan?page=0&size=10000`)).data.content
         },
-        handelSimpan: function( item ){
+        handelSimpan: function(){
             this.setFetching(true)
             this.$api.$put(`path/${this.id}`, {
-                nama: this.detail.nama
+                nama: this.detail.nama,
+                status: this.detail.status,
             }).then((resp)=>{
                 this.setSnackbar("Nama path berhasil diubah")
                 this.setFetching(false)
+            })
+        },
+        handelHapus: function(){
+            this.setConfirmation({
+                status: true,
+                title: 'Konfirmasi',
+                message: 'Apakah kamu yakin ingin menghapus Latihan topik ini ?',
+                handelOk: ()=> {
+                    this.setConfirmation({ status: false })
+                    this.setFetching(true)
+                    this.$api.$delete(`path/${this.id}`).then((resp)=>{
+                        this.setSnackbar("latihan berhasil dihapus")
+                        this.setFetching(false)
+                        this.$router.push('/apps/latihan-path')
+                    })
+                }
             })
         },
         handelImport: function( item ){
@@ -289,6 +327,7 @@ export default {
                 }
             })
         },
+
         handelSalin: function(){
             navigator.clipboard.writeText(this.aesEncrypt(this.id));
             this.setSnackbar("Kode ITS Berhasil disalin")

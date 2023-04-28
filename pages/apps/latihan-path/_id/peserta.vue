@@ -119,19 +119,19 @@
 					title="Peserta"
 					subtitle="Kelola data latihan berbasis ITS">
                     <div>
-                        <v-btn
+                        <!-- <v-btn
                             small
                             class="white">
                             <v-icon left>
                                 mdi-share-variant
                             </v-icon>
                             Bagikan Link
-                        </v-btn>
+                        </v-btn> -->
                         <v-btn
                             exact
                             small
                             class="white"
-                            to="/apps/latihan">
+                            to="/apps/latihan-path">
                             <v-icon left>
                                 mdi-chevron-left
                             </v-icon>
@@ -160,7 +160,7 @@
                         <v-col>
                             <v-text-field
                                 label="Email Peserta"
-                                v-model="filterName"
+                                v-model="filterEmail"
                                 v-on:keyup.enter="handelLoadData"
                                 placeholder="Tulis disini ..."
                                 persistent-placeholder
@@ -251,6 +251,7 @@ export default {
         return {
             filterID: '',
             filterName: '',
+            filterEmail: '',
             filterCreatedAt: '',
             filterStatus: '',
 
@@ -297,6 +298,9 @@ export default {
             }
             if(this.filterName){
                 query.push(`name:ilike.${this.filterName}`)
+            }
+            if(this.filterEmail){
+                query.push(`email:ilike.${this.filterEmail}`)
             }
             if(this.filterCreatedAt){
                 query.push(`created_at:date.${this.filterCreatedAt}`)

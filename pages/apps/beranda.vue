@@ -31,6 +31,7 @@
 							placeholder="Kode ITS"
 							dense/>
 						<v-btn 
+							:disabled="kodeITS==''"
 							@click="handelCekKodeITS"
 							class="primary">
 							Gabung
@@ -87,11 +88,17 @@
 						:key="index"
 						md="3">
 						<v-card
+							:disabled="item.path.status==0"
 							hover
 							@click="handelKlikDetailITS(item.id)">
 							<v-card-title>{{ item.path.nama }}</v-card-title>
 							<v-card-subtitle>{{ item.path.jumlah_peserta}} Peserta</v-card-subtitle>
-							<v-card-subtitle>{{ item.path.jumlah_latihan}} Latihan Soal</v-card-subtitle>
+							
+							<v-card-subtitle>
+								{{ item.path.jumlah_latihan}} Latihan Soal <br/>
+								Status: {{ item.path.status?'Aktif': 'Tidak Aktif'}}
+							</v-card-subtitle>
+							
 						</v-card>
 					</v-col>
 				</template>
@@ -148,16 +155,27 @@ export default {
 			this.isFetching	= false
 		},
 		handelCekKodeITS: function(){
+			// if(this.kodeITS==''){
+			// 	this.setSnackbar("Latihan path berhasil ditambahkan, silahkan import latihan soal")
+			// 	return
+			// }
+			let path_id	=''
+			try{
+				path_id = eval(this.aesDecrypt(this.kodeITS))
+			}catch(e){
+				this.setSnackbar("Kode tidak valid")
+				return
+			}
 			this.setFetching(true)
 			const payload	= {
-				path_id: eval(this.aesDecrypt(this.kodeITS))
+				path_id
 			}
 			this.$api.$post(`path/saya`, payload).then((resp)=>{
-                this.setFetching(false)
-                this.setSnackbar("Latihan path berhasil ditambahkan, silahkan import latihan soal")
+				this.setFetching(false)
+				this.setSnackbar("Latihan path berhasil ditambahkan, silahkan import latihan soal")
 				this.handelLoadData()
-                // this.$router.push(`/apps/its/${payload.path_id}`)
-            })
+				// this.$router.push(`/apps/its/${payload.path_id}`)
+			})
 			
 		},
 		handelKlikDetailITS: function(id){
