@@ -1,29 +1,17 @@
 <template>
-<div id="editor">
-
-    <ckeditor 
-        :value="value" 
-        @input="event => $emit('input', event)" :config="editorConfig"
-        @namespaceloaded="onNamespaceLoaded">
-    </ckeditor>
-    
-    <!-- <ckeditor-nuxt :value="value" @input="event => $emit('input', event)" :config="editorConfig" /> -->
-</div>
+<client-only placeholder="loading...">
+    <ckeditor-nuxt :value="value" @input="event => $emit('input', event)" :config="editorConfig" />
+</client-only>
 </template>
 <script>
-import CKEditor from 'ckeditor4-vue';
 export default {
     props: ['value'],
     components: {
-        'ckeditor': CKEditor.component
+        'ckeditor-nuxt': () => { if (process.client) { return import('@blowstack/ckeditor-nuxt') } },
     },
     data: function(){
-        
         return {
-            editorData: '<p>Content of the editor.</p>',
             editorConfig: {
-                mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
-                extraPlugins: 'mathjax',
                 placeholder: 'Ketik disini ...',
                 removePlugins: ['Title', 'FontSizeToolbar', 'HeadingToolbar', 'RemoveFormatToolbar', 'FontFamilyToolbar', 'HighlightToolbar', 'PageBreakToolbar', 'MediaEmbedToolbar'],
                 simpleUpload: {
@@ -33,13 +21,6 @@ export default {
                     }
                 }
             }
-        }
-    },
-    methods:{
-        onNamespaceLoaded( CKEDITOR ) {
-            // Add external `placeholder` plugin which will be available for each
-            // editor instance on the page.
-            // CKEDITOR.plugins.addExternal( 'placeholder', '/path/to/the/placeholder/plugin', 'plugin.js' );
         }
     }
 }
