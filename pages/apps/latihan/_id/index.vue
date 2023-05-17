@@ -142,8 +142,12 @@
                             </v-card>
                             <v-card outlined elevation="0" class="mt-2">
                                 <v-card-title>Hint </v-card-title>
-                                <my-editor
-                                    v-model="form.opsi[opsiDipilih].hint"/>
+                                <v-card-text>
+                                    <v-textarea
+                                        v-model="form.opsi[opsiDipilih].hint"/>
+                                </v-card-text>
+                                <!-- <my-editor
+                                    v-model="form.opsi[opsiDipilih].hint"/> -->
                             </v-card>
                             <v-card outlined elevation="0" class="mt-2">
                                 <v-card-title>

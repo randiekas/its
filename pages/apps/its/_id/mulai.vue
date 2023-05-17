@@ -136,6 +136,17 @@
                                         v-else>Show Hint</v-btn>
                                 </v-tab-item>
                             </v-tabs-items>
+                            <v-btn 
+                                v-if="soal.opsi[sub].percobaan == 0"
+                                rounded
+                                block
+                                :href="`https://www.youtube.com/results?search_query=${soal.opsi[sub].hint}`"
+                                class="mt-4 white--text"
+                                color="red"
+                                target="_blank">
+                                <v-icon left>mdi-youtube</v-icon>
+                                Lihat hint di youtube
+                            </v-btn>
                         </v-card-text>
                     </v-card>
                 </v-col>
