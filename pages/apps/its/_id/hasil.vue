@@ -210,7 +210,7 @@ export default {
 
         handelDetail: async function(item){
             this.data   = []
-            this.data   = (await this.$api.$get(`path/${this.path_id}/latihan/${this.path_latihan_id}/peserta/${item.jawaban.id}`)).data.map((item)=>{
+            this.data   = (await this.$api.$get(`path/${this.id}/latihan/${this.path_latihan_id}/peserta/${this.$route.query.path_latihan_akun_id}`)).data.map((item)=>{
                 let totalBobot          = 0
                 item.jawaban.percobaan  = JSON.parse(item.jawaban.percobaan)
                 item.opsi               = JSON.parse(item.opsi).map((row, index)=>{

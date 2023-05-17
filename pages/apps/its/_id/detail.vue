@@ -3,9 +3,19 @@
 		<div class="primary pb-16">
 			<v-container>
 				<Head
-					:title="detail.latihan.nama"
+					:title="detail.nama"
 					subtitle="Riwayat Pengerjaan">
                     <div>
+                        <v-btn
+                            exact
+                            small
+                            class="white"
+                            :to="`/apps/its/${$route.params.id}/mulai?path_latihan_id=${$route.query.path_latihan_id}`">
+                            <v-icon left>
+                                mdi-play
+                            </v-icon>
+                            Mulai
+                        </v-btn>
                         <v-btn
                             exact
                             small
@@ -47,58 +57,36 @@
 					</v-card>
 				</v-col>
 			</v-row>
-            <template
-                v-if="detail.id">
-                <v-card
-                    v-for="(item, index) in detail.path.latihan"
-                    :key="index"
-                    hover
-                    @click="handelKlikDetail(index, item)"
-                    :disabled="item.status==0"
-                    outlined class="mb-3">
-                    <v-card-title>
-                        {{ item.nama }}
-                        <v-spacer/>
-                        <v-btn
-                            v-if="item.hasil.nilai"
-                            text>
-                            Nilai: {{ item.hasil.nilai }}
-                        </v-btn>
-                        <v-btn text>
-                            Minimum benar: {{ item.minimun_benar }}
-                        </v-btn>
-                        <v-btn text>
-                            Soal: {{ item.jumlah_soal }}
-                        </v-btn>
-                        <v-btn text icon large>
-                            <v-icon
-                                v-if="item.status==0">
-                                mdi-lock
-                            </v-icon>
-                            <v-icon
-                                v-else-if="index==0 && item.hasil.nilai==undefined">
-                                mdi-lock-open-variant
-                            </v-icon>
-                            <v-icon
-                                v-else-if="index==0 && item.hasil.nilai!=undefined"
-                                color="green">
-                                mdi-check-decagram
-                            </v-icon>
-                            <v-icon
-                                v-else-if="detail.path.latihan[index-1].hasil.nilai>=detail.path.latihan[index-1].minimun_benar">
-                                mdi-lock-open-variant
-                            </v-icon>
-                            <v-icon
-                                v-else>
-                                mdi-lock
-                            </v-icon>
-                        </v-btn>
-                        <v-icon>
-                            mdi-chevron-right
-                        </v-icon>
-                    </v-card-title>
-                </v-card>
-            </template>
+            <v-alert
+                v-if="detail.riwayat.length==0">
+                Tidak ada riwayat pengerjaan, silahkan mulai
+            </v-alert>
+            <v-card
+                v-for="(item, index) in detail.riwayat"
+                :key="index"
+                hover
+                :to="`/apps/its/${id}/hasil?path_latihan_id=${item.path_latihan_id}&path_latihan_akun_id=${item.id}`"
+                :disabled="item.status==0"
+                outlined class="mb-3">
+                <v-card-title>
+                    Percobaan ke {{ index+1 }}
+                    <v-spacer/>
+                    <v-btn
+                        v-if="item.nilai"
+                        text>
+                        Nilai: {{ item.nilai }}
+                    </v-btn>
+                    <v-btn text>
+                        Minimum benar: {{ detail.minimun_benar }}
+                    </v-btn>
+                    <v-btn text>
+                        Soal: {{ detail.jumlah_soal }}
+                    </v-btn>
+                    <v-icon>
+                        mdi-chevron-right
+                    </v-icon>
+                </v-card-title>
+            </v-card>
 		</v-container>
 	</div>
 </template>
@@ -116,7 +104,7 @@ export default {
         return {
             isFetching:true,
             detail: {
-                latihan:{nama: '-'}
+                riwayat: []
             },
             soal: {},
             sub: 0,
@@ -134,154 +122,18 @@ export default {
     mounted: function(){
         this.handelLoadData()
     },
-    computed: {
-        content() {
-            
-            // keep a map of all your variables
-
-            let value   = this.soal.soal;
-            var rx      = /(_____)/g;
-            let index   = 0 
-            value       = value.replace(rx,(item)=>{
-                index++
-                if(index===this.sub+1){
-                    const opsi  = this.soal.opsi[this.sub]
-                    return this.renderStatus(opsi.status==undefined?'aktif':opsi.status, opsi.jawabanSiswa||'_____')
-                }else{
-                    const opsi  = this.soal.opsi[index-1]
-                    return this.renderStatus(opsi.status, opsi.jawabanSiswa || '_____')
-                }
-                
-            })
-            return window.WirisPlugin.Parser.initParse(value);
-        }
-    },
+   
     methods: {
         handelLoadData: async function(){
 
             this.isFetching	= true
-			let detail      = (await this.$api.$get(`/path/saya/${this.id}/latihan/${this.path_latihan_id}`)).data
-            detail.latihan.soal     = detail.latihan.soal.map((item)=>{
-                item.opsi           = JSON.parse(item.opsi).map((row)=>{
-                    return {
-                        ...row,
-                        jawabanSiswa: '',
-                        percobaan: item.maksimal_percobaan,
-                        riwayat: [],
-                    }
-                })
-                item.percobaan          = []
-                item.jumlah_percobaan   = 0
-                item.status             = 0
-                return item
-            })
-            // detail.latihan.opsi     = JSON.parse(detail.latihan.opsi)
-            if(detail.latihan.soal.length>0){
-                this.soal   = detail.latihan.soal[this.ke]
-                this.sub    = 0
-            }
+			let detail      = (await this.$api.$get(`/path/saya/${this.id}/latihan/${this.path_latihan_id}/all`)).data
             this.detail     = detail
 			this.isFetching	= false
 
         },
 
-        renderStatus: function(status, konten){
-            const warna = {
-                'aktif': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small',
-                '1': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small success--text',
-                '0': 'v-btn v-btn--outlined v-btn--rounded theme--light v-size--small error--text',
-                'undefined': 'v-btn v-btn--disabled v-btn--has-bg v-btn--rounded theme--light v-size--small',
-            }
-            return `<button type="button" class="${warna[status]}">
-                    <span class="v-btn__content">
-                        ${konten}
-                    </span>
-                </button>`
-        },
-        checkJawaban: function(){
             
-            let opsi                    = Object.assign({}, this.soal.opsi[this.sub])
-            opsi.percobaan              -= 1
-            opsi.status                 = opsi.jawaban.toLowerCase() == opsi.jawabanSiswa.toLowerCase() ? 1 : 0
-            opsi.riwayat.push({
-                jawaban: opsi.jawabanSiswa,
-                status: opsi.status,
-            })
-            this.soal.opsi              = this.soal.opsi.map((item, index)=> this.sub==index?opsi:item)
-            this.handelCheckRelateFeedback()
-            if(this.sub == this.soal.opsi.length-1){
-                // this.handelSoalSelanjutnya()
-            }else if(opsi.percobaan==0 || opsi.status){
-                this.hint               = false
-                this.sub                += 1
-            }
-        },
-
-        handelSoalSelanjutnya: function(){
-            this.hint           = false
-            this.ke             = this.ke+1
-            this.soal           = this.detail.latihan.soal[this.ke]
-            this.sub            = 0
-            // this.sub_percobaan  = this.soal.maksimal_percobaan
-        },
-
-
-        handelSelesai: async function(){
-            this.setFetching(true)
-            const payload       = {
-                detail: this.detail.latihan.soal.map((item)=>{
-                    item.percobaan  = item.opsi.map((row)=> row.riwayat)
-                    let bobot       = 0
-                    item.opsi.filter((row)=>{
-                        bobot       += row.status==1?eval(row.bobot):0
-                    })
-                    item.opsi.filter((row)=> row.status === 1).length === item.opsi.length?1:0
-                    return {
-                        latihan_detail_id: item.id,
-                        jumlah_percobaan: 0,
-                        percobaan: JSON.stringify(item.percobaan),
-                        status: item.opsi.filter((row)=> row.status === 1).length === item.opsi.length?1:0,
-                        bobot,
-                    }
-                })
-            }
-            
-            this.$api.$post(`path/saya/${this.id}/latihan/${this.path_latihan_id}`, payload).then((resp)=>{
-                this.setFetching(false)
-                this.setConfirmation({
-                    status: true,
-                    title: 'Berhasil',
-                    message: 'Jawaban latihan berhasil disimpan, terimakasih sudah mengikuti latihan :-D',
-                    handelOk: ()=> this.setConfirmation({ status: false })
-                })
-                this.$router.push(`/apps/its/${this.id}`)
-            })
-        },
-
-        handelCheckRelateFeedback: function(){
-            this.feedback   = ""
-            const feedback  = Object.assign([], this.soal.opsi[this.sub].feedback)
-            let opsi        = Object.assign({}, this.soal.opsi[this.sub])
-            let result      = feedback.filter((item)=>item.input.toLowerCase()==opsi.jawabanSiswa.toLowerCase())
-            if(feedback.length==0){
-                    result  = 'Feedback belum di setup'
-            }else{
-                if(result.length>0){
-                    result      = result[0].output
-                }else{
-                    result      = feedback.filter((item)=>item.input.toLowerCase()=='')
-                    if(result.length==0){
-                        result  = 'Feedback belum disetup'
-                    }else{
-                        result  = result[0].output
-                    }
-                }
-            }
-            this.feedback   = result
-        },
-        renderLinkBlank: function(html){
-            return html.replace(/<a href/g, `<a  target="_blank"  href`)
-        },
         handelKembali: function(){
             if(this.tipe=='guru'){
                 window.history.back()

@@ -62,6 +62,11 @@
                         <v-btn
                             v-if="item.hasil.nilai"
                             text>
+                            Percobaan: {{ item.percobaan }}
+                        </v-btn>
+                        <v-btn
+                            v-if="item.hasil.nilai"
+                            text>
                             Nilai: {{ item.hasil.nilai }}
                         </v-btn>
                         <v-btn text>
