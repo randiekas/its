@@ -178,7 +178,6 @@ export default {
                     { text: 'Jumlah Latihan', value: 'jumlah_latihan' },
                     { text: 'Jumlah Peserta', value: 'jumlah_peserta' },
                     { text: 'Created', value: 'dibuat' },
-                    { text: 'Updated', value: 'diubah' },
                     { text: 'Status', value: 'status' },
                     // { text: '', value: 'aksi' },
                 ],

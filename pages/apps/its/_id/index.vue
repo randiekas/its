@@ -128,10 +128,7 @@ export default {
 			this.isFetching	= false
         },
         handelKlikDetail: function(index, item){
-            if(item.hasil.jumlah_benar!=undefined){
-                this.$router.push(`/apps/its/${this.id}/hasil?path_latihan_id=${item.path_latihan_id}&path_id=${this.detail.path_id}`)
-                return
-            }else if(index>0){
+            if(index>0){
                 const sebelumnya    = this.detail.path.latihan[index-1]
                 if(sebelumnya.hasil.jumlah_benar==undefined){
                     this.setConfirmation({

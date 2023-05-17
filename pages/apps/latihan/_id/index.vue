@@ -27,7 +27,41 @@
 
             <v-row>
                 <v-col md="3">
-                    <v-card outlined>
+                    <form @submit.prevent="handelSimpanLatihan">
+                    <v-card>
+                        <v-card-text>
+                            <v-text-field
+                                required
+                                v-model="latihan.nama"
+                                dense
+                                label="Nama Latihan"
+                                outlined/>
+                            
+                            <p class="mb-0">Status</p>
+                            <v-radio-group v-model="latihan.status" hide-details="">
+                                <v-radio
+                                    label="Aktif"
+                                    :value="1"
+                                ></v-radio>
+                                <v-radio
+                                    label="Tidak Aktif"
+                                    :value="0"
+                                ></v-radio>
+                            </v-radio-group>
+                            
+                        </v-card-text>
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            type="submit"
+                            color="blue darken-1"
+                            text>
+                            Simpan
+                        </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                    </form>
+                    <v-card outlined class="mt-2">
                         <v-card-title>Nomor Soal</v-card-title>
                         <v-divider/>
                         <v-card-text>
@@ -47,6 +81,7 @@
                             </v-btn>
                         </v-card-text>
                     </v-card>
+                    
                 </v-col>
                 <v-col md="9">
 
@@ -189,7 +224,12 @@ export default {
             form: {opsi:[], soal: ''},
             formOpsiHolder: [],
             opsiDipilih : false,
-            opsi: []
+            opsi: [],
+            latihan: {
+                nama: '',
+                minimun_benar: 0,
+                status: 1, 
+            },
         }
     },
     watch:{
@@ -246,6 +286,8 @@ export default {
                                 }
                             })
             this.detail     = detail
+            this.latihan    = Object.assign({}, detail)
+            delete this.latihan.soal
 			this.isFetching	= false
         },
         handelTambahSoal: function(){
@@ -262,6 +304,25 @@ export default {
                 hint: "",
             }
             // this.handelTambahOpsi()
+        },
+        handelResetFormLatihan: function(){
+            this.form   = {
+                nama: '',
+                minimun_benar: 0,
+                status: 1, 
+            }
+        },
+        handelSimpanLatihan: function(){
+            this.setFetching(true)
+
+            this.$api.$put(`latihan/${this.latihan.id}`, this.latihan).then((resp)=>{
+                this.handelResetFormLatihan()
+                this.popup = false
+                this.setFetching(false)
+                this.setSnackbar("Latihan berhasil diubah")
+                this.handelLoadData()
+            })
+            // this.dialog = false
         },
         handelSimpanForm: function(){
             this.setFetching(true)

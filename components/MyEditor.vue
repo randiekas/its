@@ -20,7 +20,6 @@ export default {
     data: function(){
         
         return {
-            editorData: '<p>Content of the editor.</p>',
             editorConfig: {
                 mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
                 extraPlugins: 'mathjax',

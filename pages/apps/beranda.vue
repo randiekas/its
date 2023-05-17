@@ -151,7 +151,7 @@ export default {
 	methods:{
 		handelLoadData: async function(){
 			this.isFetching	= true
-			this.data		= (await this.$api.$get(`/path/saya?page=0&size=4`)).data.content
+			this.data		= (await this.$api.$get(`/path/saya?page=0&size=4&query=jumlah_latihan:greater.1`)).data.content
 			this.isFetching	= false
 		},
 		handelCekKodeITS: function(){

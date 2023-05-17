@@ -297,7 +297,7 @@ export default {
                 query.push(`id:${this.filterID}`)
             }
             if(this.filterName){
-                query.push(`name:ilike.${this.filterName}`)
+                query.push(`nama:ilike.${this.filterName}`)
             }
             if(this.filterEmail){
                 query.push(`email:ilike.${this.filterEmail}`)

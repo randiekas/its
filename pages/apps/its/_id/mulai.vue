@@ -3,8 +3,8 @@
 		<div class="primary pb-16">
 			<v-container>
 				<Head
-					:title="detail.latihan.nama"
-					subtitle="Riwayat Pengerjaan">
+					title="Mulai"
+					:subtitle="detail.latihan.nama">
                     <div>
                         <v-btn
                             exact
@@ -24,81 +24,129 @@
 			</v-container>
 		</div>
 		<v-container class="mt-n16">
-            <v-row v-if="isFetching" class="mb-8">
-				<v-col sm="12">
-					<v-card>
-						<v-skeleton-loader
-							class="mx-auto"
-							type="article, table-heading"/>
-					</v-card>
-				</v-col>
-				<v-col sm="12">
-					<v-card>
-						<v-skeleton-loader
-							class="mx-auto"
-							type="article, table-heading"/>
-					</v-card>
-				</v-col>
-                <v-col sm="12">
-					<v-card>
-						<v-skeleton-loader
-							class="mx-auto"
-							type="article, table-heading"/>
-					</v-card>
-				</v-col>
-			</v-row>
-            <template
-                v-if="detail.id">
-                <v-card
-                    v-for="(item, index) in detail.path.latihan"
-                    :key="index"
-                    hover
-                    @click="handelKlikDetail(index, item)"
-                    :disabled="item.status==0"
-                    outlined class="mb-3">
-                    <v-card-title>
-                        {{ item.nama }}
-                        <v-spacer/>
-                        <v-btn
-                            v-if="item.hasil.nilai"
-                            text>
-                            Nilai: {{ item.hasil.nilai }}
-                        </v-btn>
-                        <v-btn text>
-                            Minimum benar: {{ item.minimun_benar }}
-                        </v-btn>
-                        <v-btn text>
-                            Soal: {{ item.jumlah_soal }}
-                        </v-btn>
-                        <v-btn text icon large>
-                            <v-icon
-                                v-if="item.status==0">
-                                mdi-lock
-                            </v-icon>
-                            <v-icon
-                                v-else-if="index==0 && item.hasil.nilai==undefined">
-                                mdi-lock-open-variant
-                            </v-icon>
-                            <v-icon
-                                v-else-if="index==0 && item.hasil.nilai!=undefined"
-                                color="green">
-                                mdi-check-decagram
-                            </v-icon>
-                            <v-icon
-                                v-else-if="detail.path.latihan[index-1].hasil.nilai>=detail.path.latihan[index-1].minimun_benar">
-                                mdi-lock-open-variant
-                            </v-icon>
-                            <v-icon
+            <v-row
+                v-if="detail.latihan.id!=undefined && soal.id!=undefined">
+                <v-col md="8">
+                    <v-card outlined>
+                        <v-card-title>
+                            Soal
+                            <v-spacer/>
+                            {{ke+1}}/{{ detail.latihan.soal.length }}
+                        </v-card-title>
+                        <v-divider/>
+                        <v-card-text>
+                            <div
+                                class="mb-4"
+                                v-html="content"/>
+
+                            <!-- <div
+                                class="mb-4"
+                                v-html="soal.soal"/> -->
+                        </v-card-text>
+                        <v-divider/>
+                        <div
+                            v-for="(item, index) in soal.opsi"
+                            :key="index">
+                            <template
+                                v-if="index==sub">
+                                <v-card-title>
+                                    Jawabanmu
+                                    <v-spacer/>
+                                    <v-btn
+                                        rounded
+                                        @click="checkJawaban"
+                                        :disabled="sub!=index || item.percobaan === 0 || item.status === 1"
+                                        class="primary">Check ({{ item.percobaan }})</v-btn>
+                                </v-card-title>
+
+                                <v-card-text>
+                                    <my-editor
+                                        v-model="item.jawabanSiswa"
+                                        label="Jawaban"/>
+                                </v-card-text>
+                            </template>
+                            <!-- <v-text-field
+                                persistent-placeholder
+                                outlined
+                                dense
+                                v-model="item.jawabanSiswa"
+                                :readonly="sub!=index"
+                                :prefix="`${item.label}`"
+                                :success="item.status==1"
+                                :error="item.status==0"
+                                :append-icon="ikonStatus[item.status]">
+                                <template v-slot:append-outer>
+                                    <v-btn
+                                        @click="checkJawaban"
+                                        :disabled="sub!=index || item.percobaan === 0 || item.status === 1"
+                                        class="primary">Check ({{ item.percobaan }})</v-btn>
+                                </template>
+                            </v-text-field> -->
+                        </div>
+
+                        <v-card-actions>
+                            <v-spacer/>
+                            <v-btn
+                                v-if="(ke+1)==detail.latihan.soal.length"
+                                :disabled="(soal.opsi.filter((item)=>item.status==1).length!=soal.opsi.length && soal.opsi[sub].percobaan>0)"
+                                @click="handelSelesai"
+                                class="primary">Selesai</v-btn>
+                            <template
                                 v-else>
-                                mdi-lock
-                            </v-icon>
-                        </v-btn>
-                        <v-icon>
-                            mdi-chevron-right
-                        </v-icon>
-                    </v-card-title>
-                </v-card>
-            </template>
+                                <!-- <v-btn
+                                    class="primary">Ulangi</v-btn> -->
+                                <v-btn
+                                    :disabled="soal.opsi[soal.opsi.length-1].percobaan!=0 && soal.opsi[soal.opsi.length-1].status!=1"
+                                    @click="handelSoalSelanjutnya"
+                                    class="primary">Soal Selanjutnya</v-btn>
+                            </template>
+                        </v-card-actions>
+                    </v-card>
+                </v-col>
+                <v-col md="4">
+                    <v-card outlined>
+                        <v-card-subtitle>Feedback</v-card-subtitle>
+                        <v-divider/>
+                        <v-card-text>
+                            <p
+                                v-if="soal.opsi[sub].status==0"
+                                v-html="feedback"></p>
+                            <p
+                                v-else
+                                v-html="'Silahkan jawab soal untuk mendapatkan feedback'"></p>
+                        </v-card-text>
+                        <v-divider/>
+                        <v-tabs
+                            v-model="tab"
+                            centered
+                            fixed-tabs>
+                            <v-tab>Hints</v-tab>
+                            <!-- <v-tab>Chat Bot</v-tab> -->
+                        </v-tabs>
+                        <v-card-text>
+                            <v-tabs-items v-model="tab">
+                                <v-tab-item>
+                                    <div
+                                        v-if="hint"
+                                        v-html="renderLinkBlank(soal.opsi[sub].hint)">
+                                    </div>
+                                    <v-btn
+                                        block
+                                        @click="hint=true"
+                                        v-else>Show Hint</v-btn>
+                                </v-tab-item>
+                            </v-tabs-items>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+
+            <v-card
+                v-else>
+                <v-skeleton-loader
+                    class="mx-auto"
+                    type="article, table-heading"/>
+            </v-card>
 		</v-container>
 	</div>
 </template>
