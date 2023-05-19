@@ -113,16 +113,19 @@
                                 outlined>
                                 Mode Expert
                             </v-btn> -->
-                            <v-btn
-                                v-for="item in opsi"
-                                :key="item"
-                                @click="opsiDipilih=item-1"
-                                :class="`mr-1 ${opsiDipilih===item-1?'primary white--text':''}`"
-                                small
-                                rounded
-                                outlined>
-                                {{ item }}
-                            </v-btn>
+                            <template
+                                v-for="(item, index) in opsi">
+                                <v-btn
+                                    v-if="index<10"
+                                    :key="item"
+                                    @click="opsiDipilih=item-1"
+                                    :class="`mr-1 ${opsiDipilih===item-1?'primary white--text':''}`"
+                                    small
+                                    rounded
+                                    outlined>
+                                    {{ item }}
+                                </v-btn>
+                            </template>
                         </v-card-title>
                         
                         <v-divider/>

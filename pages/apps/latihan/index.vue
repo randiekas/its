@@ -113,6 +113,74 @@
             </v-card>
 		</v-container>
 
+        
+        <v-dialog
+			v-model="popup"
+			persistent
+			max-width="600px">
+            <form @submit.prevent="handelSimpanForm">
+                <v-card>
+                    <v-card-title>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-text-field
+                                        required
+                                        v-model="form.nama"
+                                        dense
+                                        label="Nama Latihan"
+                                        outlined/>
+                                    <v-text-field
+                                        v-if="form.id!=undefined"
+                                        v-model.number="form.minimun_benar"
+                                        type="number"
+                                        dense
+                                        label="Minimum jumlah benar"
+                                        outlined
+                                        required/>
+                                    <v-alert 
+                                        v-if="form.minimun_benar>form.jumlah_soal"type="error">
+                                        Minimum jumlah benar, tidak boleh lebih dari jumlah soal
+                                    </v-alert>
+                                    <p class="mb-0">Status</p>
+                                    <v-radio-group v-model="form.status" hide-details="">
+                                        <v-radio
+                                            label="Aktif"
+                                            :value="1"
+                                        ></v-radio>
+                                        <v-radio
+                                            label="Tidak Aktif"
+                                            :value="0"
+                                        ></v-radio>
+                                    </v-radio-group>
+                                    
+                                </v-col>
+
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="popup = false">
+                        Batal
+                    </v-btn>
+                    <v-btn
+                        type="submit"
+                        color="blue darken-1"
+                        text>
+                        Simpan
+                    </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </form>
+		</v-dialog>
+        
+        
 	</div>
 </template>
 <script>
