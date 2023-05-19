@@ -100,6 +100,11 @@
                         <v-card-title>Soal</v-card-title>
                         <my-editor v-model="form.soal"/>
                     </v-card>
+                    <v-alert 
+                        v-if="opsi>10"
+                        type="error">
+                        maksimal 10 anak soal
+                    </v-alert>
 
                     <v-card>
                         <v-card-title>
@@ -306,7 +311,7 @@ export default {
             this.dipilih    = false
             this.form   = {
                 soal: '',
-                maksimal_percobaan: 0,
+                maksimal_percobaan: 1,
                 opsi: [],
                 hint: "",
             }
