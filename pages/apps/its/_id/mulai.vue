@@ -313,7 +313,7 @@ export default {
                     message: 'Jawaban latihan berhasil disimpan, terimakasih sudah mengikuti latihan :-D',
                     handelOk: ()=> this.setConfirmation({ status: false })
                 })
-                this.$router.push(`/apps/its/${this.id}`)
+                this.$router.push(`/apps/its/${this.id}/detail?path_latihan_id=${this.$route.query.path_latihan_id}`)
             })
         },
 
@@ -345,7 +345,7 @@ export default {
             if(this.tipe=='guru'){
                 window.history.back()
             }else{
-                this.$router.push(`/apps/its/${this.id}`)
+                this.$router.push(`/apps/its/${this.id}/detail?path_latihan_id=${this.$route.query.path_latihan_id}`)
             }
         }
     }
