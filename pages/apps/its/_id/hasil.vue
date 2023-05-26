@@ -20,7 +20,7 @@
                             exact
                             small
                             class="white"
-                            :to="`/apps/its/${id}`">
+                            :to="`/apps/its/${id}/detail?path_latihan_id=${$route.query.path_latihan_id}`">
                             <v-icon left>
                                 mdi-chevron-left
                             </v-icon>
