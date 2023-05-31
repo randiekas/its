@@ -97,7 +97,7 @@
                                             <v-btn v-if="row.status" x-small rounded color='green' dark>Benar</v-btn>
                                             <v-btn v-else x-small rounded color='red' dark>Salah</v-btn>
                                         </td>
-                                        <td class="text-center">{{ row.status?(row.bobot/item.totalBobot)*100:'0' }}</td>
+                                        <td class="text-center">{{ row.status?((row.bobot/item.totalBobot)*100).toFixed(2):'0' }}</td>
                                     </tr>
                                 </tbody>
                                 </template>

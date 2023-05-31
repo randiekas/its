@@ -291,8 +291,10 @@ export default {
                 detail: this.detail.latihan.soal.map((item)=>{
                     item.percobaan  = item.opsi.map((row)=> row.riwayat)
                     let bobot       = 0
+                    let bobotTotal  = 0
                     item.opsi.filter((row)=>{
                         bobot       += row.status==1?eval(row.bobot):0
+                        bobotTotal  += eval(row.bobot)
                     })
                     item.opsi.filter((row)=> row.status === 1).length === item.opsi.length?1:0
                     return {
@@ -301,6 +303,7 @@ export default {
                         percobaan: JSON.stringify(item.percobaan),
                         status: item.opsi.filter((row)=> row.status === 1).length === item.opsi.length?1:0,
                         bobot,
+                        bobotTotal,
                     }
                 })
             }
