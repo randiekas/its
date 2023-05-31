@@ -136,7 +136,7 @@ export default {
             
         handelKembali: function(){
             if(this.tipe=='guru'){
-                window.history.back()
+                this.$router.push(`/apps/latihan-path/${this.$route.params.id}`)
             }else{
                 this.$router.push(`/apps/its/${this.id}`)
             }

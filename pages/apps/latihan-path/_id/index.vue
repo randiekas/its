@@ -123,7 +123,7 @@
                                 small
                                 class="ml-2"
                                 outlined
-                                :to="`/apps/its/12/detail?path_latihan_id=${item.path_latihan_id}`">
+                                :to="`/apps/its/${$route.params.id}/detail?path_latihan_id=${item.path_latihan_id}`">
                                 <v-icon left>
                                     mdi-account-group-outline
                                 </v-icon>
