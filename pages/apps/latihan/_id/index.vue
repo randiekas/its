@@ -85,8 +85,55 @@
                 </v-col>
                 <v-col md="9">
 
-                    <v-card outlined class="mb-4">
+                    <!-- <v-card outlined class="mb-4">
                         <v-card-text>
+                            <div
+                                v-html="editorValue">
+                            </div>
+                            <v-row
+                                dense
+                                cols="12">
+                                <v-col
+                                    md="10">
+                                    <my-input-math
+                                        />
+                                </v-col>
+                                <v-col
+                                    md="2">
+                                    <v-btn
+                                        @click="handelGetEditorValue"
+                                        height="100%"
+                                        class="h-fill"
+                                        block>
+                                        Check
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                            
+
+                        </v-card-text>
+
+                    </v-card> -->
+
+                    <v-card 
+                        outlined 
+                        class="mb-4">
+                        <v-card-title>
+                            Pengaturan
+                        </v-card-title>
+                        <v-divider/>
+                        <v-card-text>
+                            <v-label class="pb-0">Tipe Soal</v-label>
+                            <v-radio-group 
+                                dense
+                                v-model="form.tipe_soal">
+                                <v-radio
+                                    label="Umum"
+                                    value="umum"/>
+                                <v-radio
+                                    label="Matematika"
+                                    value="matematika"/>
+                            </v-radio-group>
                             <v-text-field
                                 v-model="form.maksimal_percobaan"
                                 persistent-placeholder
@@ -142,22 +189,30 @@
                                 type="number"
                                 label="Bobot jawaban"
                                 hide-details=""/>
-                            <v-card outlined elevation="0" class="mt-2">
-                                <v-card-title>Jawaban </v-card-title>
+                            <v-card outlined elevation="0" class="mt-2" rounded="xl">
+                                <v-card-text>
+                                    Jawaban <br/>
+                                </v-card-text>
                                 <my-editor
+                                    v-if="form.tipe_soal=='umum'"
                                     v-model="form.opsi[opsiDipilih].jawaban"
                                     label="Jawaban"/>
+                                <my-input-math
+                                    id="jawaban"
+                                    v-model="form.opsi[opsiDipilih].jawaban"
+                                    v-else/>
+                                
                             </v-card>
-                            <v-card outlined elevation="0" class="mt-2">
-                                <v-card-title>Hint </v-card-title>
+                            <v-card outlined elevation="0" class="mt-2" rounded="xl">
                                 <v-card-text>
+                                    Hint
                                     <v-textarea
                                         v-model="form.opsi[opsiDipilih].hint"/>
                                 </v-card-text>
                                 <!-- <my-editor
                                     v-model="form.opsi[opsiDipilih].hint"/> -->
                             </v-card>
-                            <v-card outlined elevation="0" class="mt-2">
+                            <v-card outlined elevation="0" class="mt-2" rounded="xl">
                                 <v-card-title>
                                     Feedback
                                     <v-spacer/>
@@ -172,11 +227,17 @@
                                     v-for="(item, index) in form.opsi[opsiDipilih].feedback"
                                     :key="index">
                                     <v-row dense>
-                                        <v-col md="4">
+                                        <v-col md="5">
                                             <my-editor
+                                                v-if="form.tipe_soal=='umum'"
                                                 v-model="item.input"/>
+                                            <my-input-math
+                                                :id="`feedback_${index}`"
+                                                v-model="item.input"
+                                                v-else/>
+                                            
                                         </v-col>
-                                        <v-col md="7">
+                                        <v-col md="6">
                                             <my-editor
                                                 v-model="item.output"/>
                                         </v-col>
@@ -233,7 +294,11 @@ export default {
             tab: 0,
             detail: { nama:'-', soal: [] },
             dipilih: false,
-            form: {opsi:[], soal: ''},
+            form: {
+                opsi: [], 
+                soal: '',
+                tipe_soal: 'umum',
+            },
             formOpsiHolder: [],
             opsiDipilih : false,
             opsi: [],
@@ -280,13 +345,16 @@ export default {
 
         }
     },
-    mounted: function(){
+    mounted: function(){		
+		
         this.handelLoadData()
+
     },
     computed:{
         
     },
     methods: {
+        
         handelLoadData: async function(){
             this.handelResetForm()
             this.isFetching	= true
@@ -314,6 +382,7 @@ export default {
                 maksimal_percobaan: 1,
                 opsi: [],
                 hint: "",
+                tipe_soal: 'umum'
             }
             // this.handelTambahOpsi()
         },

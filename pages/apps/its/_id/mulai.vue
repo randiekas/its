@@ -61,8 +61,14 @@
 
                                 <v-card-text>
                                     <my-editor
+                                        v-if="soal.tipe_soal=='umum'"
                                         v-model="item.jawabanSiswa"
                                         label="Jawaban"/>
+
+                                    <my-input-math
+                                        v-else
+                                        id="jawaban"
+                                        v-model="item.jawabanSiswa"/>
                                 </v-card-text>
                             </template>
                             <!-- <v-text-field
@@ -212,6 +218,7 @@ export default {
                 }
                 
             })
+            
             return window.WirisPlugin.Parser.initParse(value);
         }
     },
@@ -258,22 +265,92 @@ export default {
                 </button>`
         },
         checkJawaban: function(){
-            
-            let opsi                    = Object.assign({}, this.soal.opsi[this.sub])
-            opsi.percobaan              -= 1
-            opsi.status                 = opsi.jawaban.toLowerCase() == opsi.jawabanSiswa.toLowerCase() ? 1 : 0
-            opsi.riwayat.push({
-                jawaban: opsi.jawabanSiswa,
-                status: opsi.status,
-            })
-            this.soal.opsi              = this.soal.opsi.map((item, index)=> this.sub==index?opsi:item)
-            this.handelCheckRelateFeedback()
-            if(this.sub == this.soal.opsi.length-1){
-                // this.handelSoalSelanjutnya()
-            }else if(opsi.percobaan==0 || opsi.status){
-                this.hint               = false
-                this.sub                += 1
+
+            if(this.soal.tipe_soal=='umum'){
+
+                let opsi                    = Object.assign({}, this.soal.opsi[this.sub])
+                opsi.percobaan              -= 1
+                opsi.status                 = opsi.jawaban.toLowerCase() == opsi.jawabanSiswa.toLowerCase() ? 1 : 0
+                opsi.riwayat.push({
+                    jawaban: opsi.jawabanSiswa,
+                    status: opsi.status,
+                })
+                this.soal.opsi              = this.soal.opsi.map((item, index)=> this.sub==index?opsi:item)
+                this.handelCheckRelateFeedback()
+                if(this.sub == this.soal.opsi.length-1){
+                    // this.handelSoalSelanjutnya()
+                }else if(opsi.percobaan==0 || opsi.status){
+                    this.hint               = false
+                    this.sub                += 1
+                }
+
+            }else{
+
+                const jawaban                   = this.soal.opsi[this.sub].jawabanSiswa.toLowerCase()
+                let cek                         = []
+                let benar                       = false
+                
+                for(let x=this.sub;x<=this.soal.opsi.length-1; x++){
+
+                    cek.push(x)
+                    
+                    let opsi                    = Object.assign({}, this.soal.opsi[x])
+                    const status                = opsi.jawaban.toLowerCase() == jawaban ? 1 : 0
+
+                    if(status){
+
+                        benar                   = true
+                        
+                        cek.map((item)=>{
+
+                            this.soal.opsi[item].status         = 1
+                            this.soal.opsi[item].jawabanSiswa   = this.soal.opsi[item].jawaban
+                            this.soal.opsi[item].percobaan      -= 1
+                            this.soal.opsi[item].riwayat        = [{
+                                jawaban: this.soal.opsi[item].jawaban,
+                                status: 1,
+                            }]
+
+                        })
+
+                        // if(x == this.soal.opsi.length-1){
+                        //     // this.handelSoalSelanjutnya()
+                        // }else if(opsi.percobaan==0 || opsi.status){
+                        //     this.hint               = false
+                        //     this.sub                += 1
+                        // }
+
+                        break
+                    }
+
+                }
+
+                if(benar == false ){
+
+                    let opsi                    = Object.assign({}, this.soal.opsi[this.sub])
+                    opsi.percobaan              -= 1
+                    opsi.status                 = opsi.jawaban.toLowerCase() == opsi.jawabanSiswa.toLowerCase() ? 1 : 0
+                    opsi.riwayat.push({
+                        jawaban: opsi.jawabanSiswa,
+                        status: opsi.status,
+                    })
+                    this.soal.opsi              = this.soal.opsi.map((item, index)=> this.sub==index?opsi:item)
+                    this.handelCheckRelateFeedback()
+                    if(this.sub == this.soal.opsi.length-1){
+                        // this.handelSoalSelanjutnya()
+                    }else if(opsi.percobaan==0 || opsi.status){
+                        this.hint               = false
+                        this.sub                += 1
+                    }
+
+                }
+
+                
+                
+
             }
+            
+            
         },
 
         handelSoalSelanjutnya: function(){

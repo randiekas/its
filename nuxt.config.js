@@ -6,7 +6,10 @@ export default {
 
 	// Target: https://go.nuxtjs.dev/config-target
 	target: 'static',
-
+	server:{
+		host: '0.0.0.0',
+		port: 3002,
+	},
 	// Global page headers: https://go.nuxtjs.dev/config-head
 	head: {
 		titleTemplate: '%s - ITS',
@@ -21,7 +24,13 @@ export default {
 			{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
 		],
 		script: [
-			{ src: 'https://cdn.jsdelivr.net/npm/@wiris/mathtype-generic@7.28.1/wirisplugin-generic.min.js' }
+			{ src: 'https://cdn.jsdelivr.net/npm/@wiris/mathtype-generic@7.28.1/wirisplugin-generic.min.js' },
+			{ src: 'https://www.wiris.net/demo/editor/editor?lang=en' },
+			// { src: 'https://www.wiris.net/demo/hand/hand.js' },
+			// { src: 'https://polyfill.io/v3/polyfill.min.js?features=es6' },
+			// { src: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js' },
+			// { src: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/mml-svg.js' },
+			// { src: 'https://cdn.jsdelivr.net/npm/@wiris/mathtype-generic@8.9.1/wirisplugin-generic.min.js' },
 		],
 	},
 
