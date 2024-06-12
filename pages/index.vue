@@ -66,7 +66,7 @@
 			</v-col>
 			</v-row>
 		</v-card>
-		<p class="text-center mt-4">Versi 2.0.0</p>
+		<p class="text-center mt-4">Versi 2.0.1</p>
 	</v-col>
 	</div>
 </template>

@@ -292,14 +292,20 @@ export default {
                 
                 for(let x=this.sub;x<=this.soal.opsi.length-1; x++){
 
+                    console.log(x)
+
                     cek.push(x)
                     
                     let opsi                    = Object.assign({}, this.soal.opsi[x])
                     const status                = opsi.jawaban.toLowerCase() == jawaban ? 1 : 0
+                    opsi.percobaan              -= 1
+                    opsi.status                 = status
 
                     if(status){
 
                         benar                   = true
+
+                        
                         
                         cek.map((item)=>{
 
@@ -311,8 +317,15 @@ export default {
                                 status: 1,
                             }]
 
+
                         })
 
+                        if(this.sub == this.soal.opsi.length-1){
+                            // this.handelSoalSelanjutnya()
+                        }else if(opsi.percobaan==0 || opsi.status){
+                            this.hint               = false
+                            this.sub                += 1
+                        }
                         // if(x == this.soal.opsi.length-1){
                         //     // this.handelSoalSelanjutnya()
                         // }else if(opsi.percobaan==0 || opsi.status){
