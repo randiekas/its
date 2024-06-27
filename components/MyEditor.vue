@@ -1,9 +1,11 @@
 <template>
 <div id="editor">
-
     <ckeditor 
+        ref="editor"
         :value="value" 
-        @input="event => $emit('input', event)" :config="editorConfig"
+        @ready="handelEditorReady"
+        @input="event => isEditorReady && $emit('input', event)" 
+        :config="editorConfig"
         @namespaceloaded="onNamespaceLoaded">
     </ckeditor>
     
@@ -20,19 +22,24 @@ export default {
     data: function(){
         
         return {
+            isEditorReady: false,
             editorConfig: {
                 // mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
                 // extraPlugins: 'mathjax',
+                extraPlugins: 'ckeditor_wiris',
+                allowedContent: true,
                 placeholder: 'Ketik disini ...',
                 toolbar: [
                     // { name: 'clipboard', items: [ 'Undo', 'Redo' ] },
                     // { name: 'styles', items: [ 'Format', 'Font', 'FontSize' ] },
+                    { name: 'wirisplugins', items: ['ckeditor_wiris_formulaEditor'] },
                     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat', 'CopyFormatting' ] },
                     { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
                     { name: 'align', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
                     // { name: 'links', items: [ 'Link', 'Unlink' ] },
                     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList' ] },
                     { name: 'insert', items: [ 'Image', 'Table', 'Mathjax' ] },
+
                     // { name: 'tools', items: [ 'Maximize', 'mathjax' ] },
                     // { name: 'editing', items: [ 'mathjax' ] }
                 ],
@@ -50,9 +57,18 @@ export default {
     },
     methods:{
         onNamespaceLoaded( CKEDITOR ) {
+
+            CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://www.wiris.net/demo/plugins/ckeditor/', 'plugin.js')
+            // this.isEditorReady  = true
             // Add external `placeholder` plugin which will be available for each
             // editor instance on the page.
             // CKEDITOR.plugins.addExternal( 'placeholder', '/path/to/the/placeholder/plugin', 'plugin.js' );
+        },
+
+        handelEditorReady: function(){
+            // var editor = CKEDITOR.instances.editor1;
+            this.$refs.editor.instance.setData('abcd1234')
+            this.isEditorReady = true
         }
     }
 }

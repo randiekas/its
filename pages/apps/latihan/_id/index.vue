@@ -190,27 +190,34 @@
                                 label="Bobot jawaban"
                                 hide-details=""/>
                             <v-card outlined elevation="0" class="mt-2" rounded="xl">
+                                
                                 <v-card-text>
                                     Jawaban <br/>
                                 </v-card-text>
+                                
                                 <my-editor
                                     v-if="form.tipe_soal=='umum'"
                                     v-model="form.opsi[opsiDipilih].jawaban"
                                     label="Jawaban"/>
                                 <my-input-math
+                                    v-else
                                     id="jawaban"
                                     v-model="form.opsi[opsiDipilih].jawaban"
-                                    v-else/>
+                                    />
                                 
                             </v-card>
                             <v-card outlined elevation="0" class="mt-2" rounded="xl">
-                                <v-card-text>
+                                
+                                <v-card-title>
                                     Hint
+                                </v-card-title>
+                                <!-- <v-card-text>
+                                    
                                     <v-textarea
                                         v-model="form.opsi[opsiDipilih].hint"/>
-                                </v-card-text>
-                                <!-- <my-editor
-                                    v-model="form.opsi[opsiDipilih].hint"/> -->
+                                </v-card-text> -->
+                                <my-editor
+                                    v-model="form.opsi[opsiDipilih].hint"/>
                             </v-card>
                             <v-card outlined elevation="0" class="mt-2" rounded="xl">
                                 <v-card-title>

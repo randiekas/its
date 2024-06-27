@@ -17,6 +17,7 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/pwa": "^3.3.5",
+    "@wiris/mathtype-ckeditor4": "^8.9.2",
     "@wiris/mathtype-generic": "^8.9.1",
     "ckeditor4-vue": "^2.3.0",
     "core-js": "^3.15.1",

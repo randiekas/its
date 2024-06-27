@@ -2145,6 +2145,13 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
+"@wiris/mathtype-ckeditor4@^8.9.2":
+  version "8.9.2"
+  resolved "https://registry.yarnpkg.com/@wiris/mathtype-ckeditor4/-/mathtype-ckeditor4-8.9.2.tgz#fd07da03a4e6011fddef73fae8827fb8a239cc04"
+  integrity sha512-NGCKDr6vxAg5csHybpXOyKlfBT1mqYFDc2P780MuKbe6J5XvaoBOFMOExkATPlvp0E7B9fwpb4FsJkquaw2lGw==
+  dependencies:
+    "@wiris/mathtype-html-integration-devkit" "1.17.2"
+
 "@wiris/mathtype-generic@^8.9.1":
   version "8.9.1"
   resolved "https://registry.yarnpkg.com/@wiris/mathtype-generic/-/mathtype-generic-8.9.1.tgz#17b4f3035b6c897c23526435009ae0ef1127ad83"
@@ -2156,6 +2163,14 @@
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/@wiris/mathtype-html-integration-devkit/-/mathtype-html-integration-devkit-1.17.1.tgz#413edf74750c834f4fe6bc13bf75654798ba266f"
   integrity sha512-JxTPtzkDKI7POPMzw2O+fDSKXBLe+H85e/zmfr6iRzqTpARYyfXiykTCzoEvvN3WUshhY3IryzRS60wUBr/wPg==
+  dependencies:
+    dompurify "^3.0.10"
+    uuid "^8.3.2"
+
+"@wiris/mathtype-html-integration-devkit@1.17.2":
+  version "1.17.2"
+  resolved "https://registry.yarnpkg.com/@wiris/mathtype-html-integration-devkit/-/mathtype-html-integration-devkit-1.17.2.tgz#5aeb758f5d65ea5e21109441b7d1cdf0bbfa1574"
+  integrity sha512-2PwieyW4rPqw+Td+JEr6QpR8rOn8i5hMVmFUMbh4uvNzwhZQG6eJtvQiAn1ZxVjaAWwhTRZ1863aY35MWhrRIg==
   dependencies:
     dompurify "^3.0.10"
     uuid "^8.3.2"
