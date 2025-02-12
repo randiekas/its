@@ -24,6 +24,7 @@ export default {
 			{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
 		],
 		script: [
+			{ src: 'https://scolacdn.com/frontend/libraries/ckeditor/ckeditor.js' },
 			{ src: 'https://cdn.jsdelivr.net/npm/@wiris/mathtype-generic@7.28.1/wirisplugin-generic.min.js' },
 			{ src: 'https://www.wiris.net/demo/editor/editor?lang=en' },
 			// { src: 'https://www.wiris.net/demo/hand/hand.js' },

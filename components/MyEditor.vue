@@ -1,31 +1,40 @@
 <template>
-<div id="editor">
-    <ckeditor 
-        ref="editor"
-        :value="value" 
-        @ready="handelEditorReady"
-        @input="event => isEditorReady && $emit('input', event)" 
-        :config="editorConfig"
-        @namespaceloaded="onNamespaceLoaded">
-    </ckeditor>
-    
-    <!-- <ckeditor-nuxt :value="value" @input="event => $emit('input', event)" :config="editorConfig" /> -->
-</div>
+    <div>
+        <textarea ref="editor" id="random" :value="value"></textarea>
+    </div>
 </template>
 <script>
-import CKEditor from 'ckeditor4-vue';
+// import { CKEditor } from 'ckeditor4-vue';
+
 export default {
     props: ['value'],
-    components: {
-        'ckeditor': CKEditor.component
+    mounted() {
+        this.initCKEditor();
     },
-    data: function(){
-        
-        return {
-            isEditorReady: false,
-            editorConfig: {
-                // mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
-                // extraPlugins: 'mathjax',
+    watch: {
+        value: function (newValue) {
+            const editorInstance = this.$refs.editor.instance;
+
+            if (editorInstance) {
+                const currentContent = editorInstance.getData();
+
+                // Update CKEditor only if the new value differs from the current content
+                if (newValue !== currentContent) {
+                    editorInstance.setData(newValue);
+                }
+            }
+
+        }
+    },
+    methods: {
+        initCKEditor() {
+            const editorElement = this.$refs.editor;
+
+            // console.log(editorElement)
+            CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://www.wiris.net/demo/plugins/ckeditor/', 'plugin.js')
+            // // Initialize CKEditor
+            this.$refs.editor.instance  = CKEDITOR.replace(editorElement, {
+                // Add custom configuration here if needed
                 extraPlugins: 'ckeditor_wiris',
                 allowedContent: true,
                 placeholder: 'Ketik disini ...',
@@ -43,33 +52,27 @@ export default {
                     // { name: 'tools', items: [ 'Maximize', 'mathjax' ] },
                     // { name: 'editing', items: [ 'mathjax' ] }
                 ],
-                // removePlugins: 'autoembed,embedsemantic,image2,sourcedialog,showborders',
-                // removePlugins: ['Title', 'FontSizeToolbar', 'HeadingToolbar', 'RemoveFormatToolbar', 'FontFamilyToolbar', 'HighlightToolbar', 'PageBreakToolbar', 'MediaEmbedToolbar', 'RemoveFormat'],
-                // toolbar: ['Title', 'FontSizeToolbar', 'HeadingToolbar', 'RemoveFormatToolbar', 'FontFamilyToolbar', 'HighlightToolbar', 'PageBreakToolbar', 'MediaEmbedToolbar', 'RemoveFormat'],
-                // simpleUpload: {
-                //     uploadUrl: 'https://api-rosetta.tutooria.com/uploader/files',
-                //     headers: {
-                //         'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2F1dGhlbnRpY2F0aW9uLnNjb2xhLmlkIiwiYXVkIjoiaHR0cHM6Ly9yb3NldHRhLXdvcmtlci5iaWliby5pZC8iLCJqdGkiOiI0ZjFnMjNhMTJhYSIsImlhdCI6MTY1NzE2ODMzNS43MTM1OSwiaWQiOjYwLCJlbWFpbCI6InJhbmRpZWthc0BnbWFpbC5jb20iLCJ0aXBlIjoiYmlhc2EiLCJzdWJfaWQiOiIxMTU1MDM5MDc0NDYyNzM0ODUwMTUiLCJuYW1hIjoiUmFuZGkgRWthIFNldGlhd2FuIiwiZm90byI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hLS9BT2gxNEdpNHhhcXhNS053VlBuWm9EMTZFQk9KWlhGLTZWTVpTVW4zUEY4Rk5nPXM5Ni1jIn0.GMV7G3XOE6hVHc5MtgJ8X0ntRys4ZwXJrLA-YZByp7E'
-                //     }
-                // }
-            }
+            });
+
+            this.$refs.editor.instance.on('instanceReady', () => {
+
+                this.$refs.editor.instance.setData(this.value); // Set initial value
+
+                this.$refs.editor.instance.on('change', () => {
+                    this.$emit('input', this.$refs.editor.instance.getData());
+                });
+
+            });
+            // // Sync CKEditor data with v-model
+            
         }
     },
-    methods:{
-        onNamespaceLoaded( CKEDITOR ) {
-
-            CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://www.wiris.net/demo/plugins/ckeditor/', 'plugin.js')
-            // this.isEditorReady  = true
-            // Add external `placeholder` plugin which will be available for each
-            // editor instance on the page.
-            // CKEDITOR.plugins.addExternal( 'placeholder', '/path/to/the/placeholder/plugin', 'plugin.js' );
-        },
-
-        handelEditorReady: function(){
-            // var editor = CKEDITOR.instances.editor1;
-            this.$refs.editor.instance.setData('abcd1234')
-            this.isEditorReady = true
-        }
-    }
-}
+    beforeDestroy() {
+        // Destroy CKEditor instance
+        // if (this.$refs.editor.instance) {
+        //     this.$refs.editor.instance.destroy(true);
+        //     this.$refs.editor.instance = null; // Clear the reference
+        // }
+    },
+};
 </script>

@@ -11,7 +11,6 @@
     "lint": "yarn lint:js"
   },
   "dependencies": {
-    "@blowstack/ckeditor-nuxt": "^0.6.0",
     "@nuxt/content": "^1.14.0",
     "@nuxtjs/auth-next": "^5.0.0-1648802546.c9880dc",
     "@nuxtjs/axios": "^5.13.6",
@@ -19,7 +18,7 @@
     "@nuxtjs/pwa": "^3.3.5",
     "@wiris/mathtype-ckeditor4": "^8.9.2",
     "@wiris/mathtype-generic": "^8.9.1",
-    "ckeditor4-vue": "^2.3.0",
+    "ckeditor4-vue": "3.2.1",
     "core-js": "^3.15.1",
     "nuxt": "^2.15.7",
     "vuetify": "^2.5.5"
