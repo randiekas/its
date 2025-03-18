@@ -210,10 +210,12 @@ export default {
             value       = value.replace(rx,(item)=>{
                 index++
                 if(index===this.sub+1){
-                    const opsi  = this.soal.opsi[this.sub]
+                    let opsi            = this.soal.opsi[this.sub]
+                    opsi.jawabanSiswa   = opsi.jawabanSiswa=='<math xmlns="http://www.w3.org/1998/Math/MathML"/>'?'_____':opsi.jawabanSiswa
                     return this.renderStatus(opsi.status==undefined?'aktif':opsi.status, opsi.jawabanSiswa||'_____')
                 }else{
-                    const opsi  = this.soal.opsi[index-1]
+                    let opsi            = this.soal.opsi[index-1]
+                    opsi.jawabanSiswa   = opsi.jawabanSiswa=='<math xmlns="http://www.w3.org/1998/Math/MathML"/>'?'_____':opsi.jawabanSiswa
                     return this.renderStatus(opsi.status, opsi.jawabanSiswa || '_____')
                 }
                 

@@ -25,7 +25,7 @@ export default {
 		],
 		script: [
 			{ src: 'https://scolacdn.com/frontend/libraries/ckeditor/ckeditor.js' },
-			{ src: 'https://cdn.jsdelivr.net/npm/@wiris/mathtype-generic@7.28.1/wirisplugin-generic.min.js' },
+			{ src: 'https://cdn.jsdelivr.net/npm/@wiris/mathtype-generic@8.13.1/wirisplugin-generic.min.js' },
 			{ src: 'https://www.wiris.net/demo/editor/editor?lang=en' },
 			// { src: 'https://www.wiris.net/demo/hand/hand.js' },
 			// { src: 'https://polyfill.io/v3/polyfill.min.js?features=es6' },
